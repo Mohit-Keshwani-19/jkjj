@@ -1,0 +1,38 @@
+Set linesize 160;
+Set pagesize 25;
+set serveroutput on;
+Cl scr;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+We are working in a single user system. The user name is "system".
+
+The following will give error, as there is no user1.
+
+	grant select on emp4 to user1; 
+
+grant select on emp4 to system;		-- This will work
+
+You can specify the attributes for update or insert prviledge.
+
+grant update (salary) on emp4 to system;
+grant insert (salary) on emp4 to system;
+
+What will happen to other attributes not mentioned in the grant insert? They will take the default value if specified
+ or null value otherwise.
+
+Attributes cannot be specified for select priviledge.
+
+Delete priviledge allows deletion of tuples.
+
+drop table emp5;
+create table emp5 as (
+			select * from emp4);
+
+grant delete on emp5 to system;
+
+delete from emp5 where empid=103;
+revoke delete on emp5 from system; 		-- gives error as you cannot revoke your own priviledges
+
+grant select on emp4 to system;	
+revoke select on emp4 from system;
+
+

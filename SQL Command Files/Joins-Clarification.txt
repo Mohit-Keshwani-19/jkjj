@@ -1,0 +1,12 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+												NATURAL JOIN
+select * from instructor, teaches
+where instructor.ID=teaches.id;
+
+select * from instructor natural join teaches;     /ID will be dispalyed only once */
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+												INNER JOIN CLARIFICATON
+when we do not preserve the information of unmatched tuples, that join is inner join.
+The join which is not a NATURAL or OUTER JOIN is an INNER JOIN
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

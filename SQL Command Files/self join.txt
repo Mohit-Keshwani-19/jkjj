@@ -1,0 +1,68 @@
+set pagesize 40;
+st linesize 160;
+set serveroutput on;
+cl scr;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+select table_name from user_tables;
+select * from user_objects;
+select object_name, object_type, status from user_objects;
+select object_name, object_type, status from user_objects where object_type='procedure';
+select object_name, object_type, status from user_objects where object_type='PROCEDURE';
+drop procedure lalit3;
+select object_name, object_type, status from user_objects where object_type='FUNCTION';
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+												SELF JOIN - MD is his own manager
+drop table emp;
+create table emp (
+	empid number (3),
+	ename varchar(30),
+	edesig varchar(30),
+	mgrid number (3)
+);
+
+insert into emp values (101, 'Biren', 'MD', 101);
+insert into emp values (102, 'Harish', 'Sales Manager-Retail', 101);
+insert into emp values (103, 'Sandeep', 'Sales Manager-Corp', 101);
+insert into emp values (104, 'Amit', 'CFO', 101);
+insert into emp values (105, 'Lalit', 'Mgr - HR,, Admin-IT', 101);
+insert into emp values (106, 'Tony', 'Salesman', 102);
+insert into emp values (107, 'Rajesh', 'Salesman', 103);
+insert into emp values (108, 'Rita', 'Acts Executive', 104);
+insert into emp values (109, 'Bhavesh', 'PRO', 105);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Problem: Display all the employees with their manager names. Any employee who does not have a manager will have null in the mgrid attribute.
+
+Solution 1:
+
+Select all a.empid, a.ename, a. edesig, b.ename mgr_name
+from emp a, emp b
+where a.mgrid = b.empid
+order by empid;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+									SELF JOIN using Left Outer Join - manager id of MD is null
+Solution 2: (The manager of emp 101 MD is null).
+
+truncate table emp;
+insert into emp values (101, 'Biren', 'MD', null);
+insert into emp values (102, 'Harish', 'Sales Manager-Retail', 101);
+insert into emp values (103, 'Sandeep', 'Sales Manager-Corp', 101);
+insert into emp values (104, 'Amit', 'CFO', 101);
+insert into emp values (105, 'Lalit', 'Mgr - HR,, Admin-IT', 101);
+insert into emp values (106, 'Tony', 'Salesman', 102);
+insert into emp values (107, 'Rajesh', 'Salesman', 103);
+insert into emp values (108, 'Rita', 'Acts Executive', 104);
+insert into emp values (109, 'Bhavesh', 'PRO', 105);
+
+Select all a.empid, a.ename, a. edesig, b.ename mgr_name
+from emp a left outer join emp b
+ON a.mgrid = b.empid
+order by a.empid;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+

@@ -1,0 +1,212 @@
+Set linesize 160;
+Set pagesize 25;
+Clear screen;
+alter session set nls_date_format='dd-mm-yyyy hh12:mi:ss AM';
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+select table_name from user_tables order by table_name;
+
+data type date:
+insert into emp2 values (to_date('25-03-1985', 'DD-MM-YYYY'));
+
+data type timestamp:
+insert into emp3 values (to_date('07-12-1992 10:52:00', 'DD-MM-YYYY HH:MI:SS'));
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++								
+											DATE / TIMESTAMP INSERTING VALUES
+
+drop table emp;
+
+create table emp (
+empid numeric(3),
+salary numeric(8,2),
+joindate1 date,
+birthtime timestamp
+);
+
+insert into emp(empid) values (109);
+
+insert into emp values (201, 60000);
+insert into emp values (301, 150000.00);
+insert into emp (salary, joindate1) values (60000, to_date('21-12-2020', 'DD-MM-YYYY'));
+
+
+
+drop table emp2;
+create table emp2 (
+joindate1 date
+);
+
+insert into emp2 values (to_date('25-03-1985', 'DD-MM-YYYY'));
+insert into emp2 values (to_date('2001-09-29', 'YYYY-MM-DD'));
+
+drop table emp3;
+create table emp3 (
+joindate2 timestamp
+);
+
+insert into emp3 values (to_date('07-12-1992 10:52:00', 'DD-MM-YYYY HH:MI:SS'));
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														SYSDATE
+
+
+select sysdate from dual;
+
+								to change default date format of date for display:
+
+alter session set nls_date_format='dd-mm-yyyy hh24:mi:ss';
+select sysdate from dual;
+
+alter session set nls_date_format='mm-dd-yyyy hh12:mi:ss';
+select sysdate from dual;
+
+alter session set nls_date_format='mm-dd-yyyy hh:mi:ss AM';
+select sysdate from dual;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+											To see individual components of date
+
+select to_char(to_date('01-02-1985','DD-MM-YYYY'), 'DD') from dual;
+
+
+
+(((((((((((((((((((((((((((((((((((
+
+select dateofbirth, to_char(dateofbirth, 'DD') from emp2;
+
+((((((((((((((((((((((((((((((((((((
+
+select sysdate, to_char(sysdate, 'DD') from dual;
+select sysdate, to_char(sysdate, 'MM') from dual;
+select sysdate, to_char(sysdate, 'YYYY') from dual;
+
+select sysdate, to_char(sysdate, 'MM-DD') from dual;
+select sysdate, to_char(sysdate, 'MM-DD-YY') from dual;
+select sysdate, to_char(sysdate, 'MM-DD-YYYY') from dual;
+
+select sysdate, to_char(sysdate, 'DD-MM-YYYY') from dual;
+select sysdate, to_char(sysdate, 'DD-MMM-YYYY') from dual;
+select sysdate, to_char(sysdate, 'DD-MM-YYYY AM') from dual;
+
+select sysdate, to_char(sysdate, 'DD-MM-YYYY A.M.') from dual;
+select sysdate, to_char(sysdate, 'DD-MM-YYYY P.M.') from dual;
+
+
+select sysdate, to_char(sysdate, 'DY') from dual;
+select sysdate, to_char(sysdate, 'dy') from dual;
+
+select sysdate, to_char(sysdate, 'day') from dual;
+select sysdate, to_char(sysdate, 'dAy') from dual;
+select sysdate, to_char(sysdate, 'd') from dual;
+select sysdate, to_char(sysdate, 'D') from dual;
+
+select sysdate, to_char(sysdate, 'ddd') from dual;
+select sysdate, to_char(sysdate, 'j') from dual;
+
+select sysdate, to_char(sysdate, 'mon') from dual;
+select sysdate, to_char(sysdate, 'MON') from dual;
+
+select sysdate, to_char(sysdate, 'month') from dual;
+select sysdate, to_char(sysdate, 'Month') from dual;
+select sysdate, to_char(sysdate, 'MONTH') from dual;
+
+select sysdate, to_char(sysdate, 'RM') from dual;
+
+select sysdate, to_char(sysdate, 'Y') from dual;
+select sysdate, to_char(sysdate, 'YYYY') from dual;
+
+select sysdate, to_char(sysdate, 'YYY') from dual;
+
+select sysdate, to_char(sysdate, 'YEAR') from dual;
+select sysdate, to_char(sysdate, 'Year') from dual;
+
+select sysdate, to_char(sysdate, 'Q') from dual;
+select sysdate, to_char(sysdate, 'CC') from dual;
+select sysdate, to_char(sysdate, 'W') from dual;
+select sysdate, to_char(sysdate, 'WW') from dual;
+
+
+
+Suppose the year was 2000, then which century?
+
+If the right most 2 digits are 00, then take the leftmost 2 digits plus 1.
+
+
+select sysdate, to_char(sysdate, 'W') from dual;
+select sysdate, to_char(sysdate, 'WW') from dual;
+
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+alter session set nls_date_format='dd-mm-yyyy hh12:mi:ss';
+alter session set nls_date_format='dd-mm-yyyy';
+
+															EXTRACT
+select current_date from dual;
+select extract(day from current_date) from dual;
+select extract(month from current_date) from dual;
+select extract(year from current_date) from dual;
+select current_timestamp from dual;
+select localtimestamp from dual;
+
+
+
+							BELOW NOT SUPPORTED BY ORACLE
+select current_time from dual;
+select extract(hour from current_time) from dual;
+select extract(minute from current_time) from dual;
+select extract(second from current_time) from dual;
+select localtime from dual;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														ISO WEEK
+
+select sysdate, to_char(sysdate, 'IW') from dual;
+select sysdate, to_char(sysdate, 'WW') from dual;
+select to_char(to_date('07-03-2021', 'DD-MM-YYYY'), 'WW') from dual;
+select to_char(to_date('07-03-2021', 'DD-MM-YYYY'), 'IW') from dual;
+
+As the week may cross the yera end boundary of Dec-Jan, then such a transition week will be considered as
+ the 53rd week of previous year if Thursday of transition week falls in the previous year.
+ If the Thursday of tansition week falls in the next year, then the transition week will be considered as the 1st week of next year.
+
+select sysdate, to_char(sysdate, 'SSSSS') from dual;  /* number of seconds from the pst midnight */
+
+select sysdate, to_char(sysdate, 'TS') from dual; 	/* time in short format */
+select sysdate, to_char(sysdate, 'AM') from dual; 
+select sysdate, to_char(sysdate, 'DL') from dual; 	/* date in long format */
+select sysdate, to_char(sysdate, 'DS') from dual; 	/* date in short format */
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+												ADDITION, SUBTRATION IN DATES
+
+
+drop table emp2;
+
+create table emp2 (
+dateofbirth timestamp,
+doj date,
+dol date
+);
+
+insert into emp2 values (to_date('10-11-1960 10:52:00', 'DD-MM-YYYY HH:MI:SS'), 
+			 to_date('10-07-1982 10:00:00', 'DD-MM-YYYY HH:MI:SS'),
+			 to_date('24-03-1984 10:00:00', 'DD-MM-YYYY HH:MI:SS')
+			);
+
+select doj, dol, dol-doj from emp2;
+select doj, dol, dol-doj as days_worked from emp2;
+select doj, doj+10 from emp2;
+select doj, 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+

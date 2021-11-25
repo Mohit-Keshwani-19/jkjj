@@ -1,0 +1,45 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+set linesize 160;
+set pagesize 40;
+set serveroutput on;
+cl scr
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+													Bank Withdrawal
+drop table balance;
+create table balance(
+	act_number number(15),
+	current_balance number(10)
+	);
+insert into balance values (101, 70000);
+insert into balance values (201, 0);
+insert into balance values (301, 0);
+++++++++++++++++++++++++++++++++++++++++++++
+declare
+ pact_num number(15);
+ pcur_bal number(10);
+ pwamt number(10);
+begin
+	pact_num := &act_number;
+	pwamt := &withdrawal_amount;
+	select current_balance into pcur_bal from balance where act_number = pact_num;
+	if pwamt <= pcur_bal then
+		update balance
+		set current_balance = current_balance - pwamt
+		where act_number = pact_num;
+		commit;
+		dbms_output.put_line('act updated');
+	else 
+		dbms_output.put_line('transaction refused, insufficient balance');
+	end if;
+end;
+/
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+update balance 
+set current_balance = current_balance +200 
+where act_number = 201;
+
+update balance 
+set current_balance = current_balance +100
+where act_number = 301;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

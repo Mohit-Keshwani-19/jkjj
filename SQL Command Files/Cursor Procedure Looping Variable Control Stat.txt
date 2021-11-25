@@ -1,0 +1,694 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															Variable Types
+
+
+number
+char
+varchar(n);
+date
+long
+long raw
+blob
+clob
+nclob
+bfile
+
+boolean - Does not work
+raw - does not work
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+
+declare
+	A number := &Enter_A;
+	B number := &Enter_B;
+	C number;
+begin
+	C :=A+B;
+	dbms_output.put_line('result: '||C);
+end;
+/
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+
+declare
+	A number := &first;
+	B number := &second;
+	C number;
+begin
+	C :=A+B;
+	dbms_output.put_line('result: '||C);
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+
+set serveroutput on;
+declare sal number;
+begin
+select salary into sal from emp4 where empid=101;
+dbms_output.put_line('sal= '||sal);
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+														CURSOR BASICS
+
+steps
+
+declare
+open
+fetch
+close
+   
+declare the cursor 
+
+declare cursor c1 is select * from emp4;   /* which ever record you want to process, assign that select stat to the cursor */
+
+no data till now. To populate with data, open the cursor
+
+open c1; /* query submitted to Oracle server, executed and result returned to a temp area know as context area in PGA (program global area) */
+
+fetching records from cursor:-
+
+"fetch" used to read records from context area (in the PGA).
+
+fetch c1 into vename, vsal; /* every time fetch is executed, one record will be read and the values will be assigned to variables */
+
+close c1; /* when all records have been processed */
+
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+													PROCEDURE EXAMPLE Salary Increment
+
+drop table emp4;
+create table emp4 (
+empid number (3),
+empname varchar(20),
+dept_name varchar(20),
+salary number(6)
+);
+
+insert into emp4 values (101, 'Lalit', 'Physics', 40000);
+insert into emp4 values (102, 'Suresh', 'Music', 50000);
+insert into emp4 values (103, 'Ganesh', 'History', 60000);
+
+select * from emp4;
+
+create or replace procedure annual_increment(emp_number IN number, increment IN number, NewSalary OUT number)
+is
+/* you can declare any required local variables for the procedure before the 'begin' but without using the keyword declare */
+	hra number(5);	
+begin
+	update emp4
+	set salary=salary+increment
+	where empid=emp_number;
+Commit;
+select salary into newsalary from emp4 where empid=emp_number;
+end;
+/
+
+variable revised_salary number;
+
+execute annual_increment(101, 5000, :revised_salary);
+print :revised_salary;
+/
+
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+												CURSOR EXAMPLE EMP, SALARY
+set serveroutput on;
+declare 
+cursor c1 is select empname, salary from emp4;
+vename emp4.empname%type;
+vsal emp4.salary%type;
+begin
+open c1;
+loop
+fetch c1 into vename, vsal;
+exit when c1%notfound;
+dbms_output.put_line(vename||' '||vsal);
+end loop;
+close c1;
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+											CURSOR EXAMPLE BOOK, PUBLISHER (from 2 tables)
+								Publisher Table
+drop table pub;
+
+create table pub (
+pcode char (2),
+pname varchar (10),
+pemail varchar (20),
+pphone numeric(10),
+primary key(pcode)
+);
+
+Insert into pub values (‘P1’, ‘BPB’, ‘bpd@gmail.com’, 1234567890);
+Insert into pub values (‘P2’, ‘Khanna’, ‘khanna@gmail.com’, 4567891230);
+Insert into pub values (‘P3’, ‘Galgotia’, ‘galgotia@gmail.com’, 7891234560);
+
+								Book Table
+
+drop table book;
+
+create table book (
+Bookcode char (10),
+Title varchar (30),
+Pcode char(2),
+Acode char(2),
+foreign key (pcode) references pub on delete cascade
+);
+
+Insert into book values (‘BOOK101’, ‘Java Programming’, ‘P2’, ‘A3’);
+Insert into book values (‘BOOK102’, ‘Database Concepts’, ‘P3’, ‘A1’);
+Insert into book values (‘BOOK103’, ‘Networking’, ‘P1’, ‘A2’);
+
+								Cursor Definition
+
+
+declare cursor c2 is select bookcode, title, pname, pemail from book, pub where book.pcode=pub.pcode;
+	vbookcode book.bookcode%type;
+	vbooktitle book.title%type;
+	vpubname pub.pname%type;
+	vpubemail pub.pemail%type;
+begin
+	open c2;
+	loop
+	fetch c2 into vbookcode, vbooktitle, vpubname, vpubemail;
+	exit when c2%notfound;
+	dbms_output.put_line(vbookcode||' '||vbooktitle||' '||vpubname||' '||vpubemail);
+	end loop;
+	close c2;
+end;
+/
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+								Without Procedure - Display all books of author code entered by user
+declare
+	pacode varchar(2) := &enter_auth_code;
+	cursor c2 is select bookcode, title, pcode, acode from book where acode=pacode;
+	vbookcode book.bookcode%type;
+	vbooktitle book.title%type;
+	vpcode book.pcode%type;
+	vacode book.acode%type;
+begin
+	open c2;
+	loop
+	fetch c2 into vbookcode, vbooktitle, vpcode, vacode;
+	exit when c2%notfound;
+	dbms_output.put_line(vbookcode||' '||vbooktitle||' '||vpcode||' '||vacode);
+	end loop;
+	close c2;
+end;
+/
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							Using Procedure - Display all books of author code entered by user
+
+Problem: Take author code from user and display all the books in the book table having that author code 
+
+/* select statement can be used only with a cursor within a procedure or function */
+
+create or replace procedure dispbook(facode IN varchar)
+is								
+	cursor c2 is select bookcode, title, pcode, acode from book where acode=facode;
+	vbookcode book.bookcode%type;
+	vbooktitle book.title%type;
+	vpcode book.pcode%type;
+	vacode book.acode%type;
+begin
+	open c2;
+	loop
+	fetch c2 into vbookcode, vbooktitle, vpcode, vacode;
+	exit when c2%notfound;
+	dbms_output.put_line(vbookcode||' '||vbooktitle||' '||vpcode||' '||vacode);
+	end loop;
+	close c2;
+end;
+/
+declare
+	pacode varchar(2) := &enter_auth_code;
+begin
+	dispbook(pacode);
+end;
+/
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+									DEFINE VARIABLES AND READ THE VALUES FROM TABLE COLUMNS
+
+drop table emp;
+create table emp (
+empid number,
+empname varchar(20),
+basic number,
+da number,
+hra number,
+totalsal number
+);
+
+insert into emp values (101, 'Mantu', 8000, 2000, 3000, null);
+insert into emp values (102, 'Girdhar', 11000, 3000, 5000, null);
+insert into emp values (103, 'Chitra', 7000, 3000, 2500, null);
+
+Problem: Write a PL/SQL code to calculate totalsal of employee having empid 102. Emp table has following fields:
+empid, empname, basic, da, hra, totalsal.
+
+Solution:
+declare 
+	e number;
+	b number;
+	d number;
+	h number;
+	t number;
+begin 
+	select basic, da, hra into b,d,h from emp where empid=102;
+	t :=b+d+h;
+	update emp set totalsal=t where empid=102;
+end;
+/
+
+Notes: select statement must return a single record
+
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+												Try to change the variables slightly
+
+Note: the tables has data type numeric whereas the PL/SQL block has data type number. But this variation is acceptable.
+Also notice the constant PI declaration.
+
+drop table emp;
+create table emp (
+empid numeric (3),
+empname varchar(20),
+basic numeric(6),
+da numeric(5),
+hra numeric(5),
+totalsal numeric(6)
+);
+
+insert into emp values (101, 'Mantu', 8000, 2000, 3000, null);
+insert into emp values (102, 'Girdhar', 11000, 3000, 5000, null);
+insert into emp values (103, 'Chitra', 7000, 3000, 2500, null);
+
+Problem: Write a PL/SQL code to calculate totalsal of employee having empid 102. Emp table has following fields:
+empid, empname, basic, da, hra, totalsal.
+
+Solution:
+declare 	
+	e number;
+	b number;
+	d number;
+	h number;
+	t number;
+	pi constant number := 3.14;
+begin 
+	select basic, da, hra into b,d,h from emp where empid=101;
+	t :=b+d+h;
+	update emp set totalsal=t where empid=101;
+end;
+/
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+												Variables linked to table attributes
+drop table emp;
+create table emp (
+empid numeric (3),
+empname varchar(20),
+basic numeric(6),
+da numeric(5),
+hra numeric(5),
+totalsal numeric(6)
+);
+
+insert into emp values (101, 'Mantu', 8000, 2000, 3000, null);
+insert into emp values (102, 'Girdhar', 11000, 3000, 5000, null);
+insert into emp values (103, 'Chitra', 7000, 3000, 2500, null);
+
+Problem: Write a PL/SQL code to calculate totalsal of employee having empid 102. Emp table has following fields:
+empid, empname, basic, da, hra, totalsal.
+
+Solution:
+declare 	
+	dummyemp 	emp.empid%type;
+	dummybasic 	emp.basic%type;
+	dummyda 	emp.da%type;
+	dummyhra 	emp.hra%type;
+	dummytotalsal 	emp.totalsal%type;
+	
+begin 
+	select basic, da, hra into dummybasic, dummyda, dummyhra from emp where empid=102;
+	dummytotalsal :=dummybasic + dummyda + dummyhra;
+	update emp set totalsal=dummytotalsal where empid=102;
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+												Row type variable linked to table record
+
+drop table emp;
+create table emp (
+empid numeric (3),
+empname varchar(20),
+basic numeric(6),
+da numeric(5),
+hra numeric(5),
+totalsal numeric(6)
+);
+
+insert into emp values (101, 'Mantu', 8000, 2000, 3000, null);
+insert into emp values (102, 'Girdhar', 11000, 3000, 5000, null);
+insert into emp values (103, 'Chitra', 7000, 3000, 2500, null);
+
+Problem: Write a PL/SQL code to calculate totalsal of employee having empid 102. Emp table has following fields:
+empid, empname, basic, da, hra, totalsal.
+
+Solution:
+declare 
+	
+	detail emp%rowtype;	
+begin 
+	select * into detail from emp where empid=101;
+	detail.totalsal := detail.basic + detail.da + detail.hra;
+	update emp set totalsal=detail.totalsal where empid=101;
+	dbms_output.put_line('totalsal: '||detail.totalsal);
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+														Control Statements	
+										IF THEN ELSE
+
+declare
+	a number := &enter_a;
+	b number := &enter_b;
+begin
+if A >= B then
+		dbms_output.put_line('A is greater');
+	  else
+		dbms_output.put_line('B is greater');
+	  end if;
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+										NESTED IF THEN ELSE - Find the largest of 3 numbers
+declare
+	a number := &enter_a;
+	b number := &enter_b;
+	c number := &enter_c;
+begin
+if A >= B then
+		if A>=C then
+			dbms_output.put_line('A is greatest');
+		else 
+			dbms_output.put_line('C is greatest');
+		end if;
+else 
+	if B>=C then 
+		dbms_output.put_line('B is greatest');
+	else 
+		dbms_output.put_line('C is greatest');
+	end if;
+end if;
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((	
+								Simple Loop - Print numbers 1 to 5
+declare 
+	counter number := 5;
+begin
+	loop
+		if counter = 0 then
+			dbms_output.put_line('finished');
+			exit;
+		end if;
+		dbms_output.put_line('Counter is: '||counter);
+		counter := counter-1;
+	end loop;
+end;
+/
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+								Loop - with Exit When
+
+declare 
+	ctr number := 5;
+begin
+	loop
+		exit when ctr=0;
+		dbms_output.put_line('Counter is: '||ctr);
+		ctr := ctr-1;
+	end loop;
+end;
+/
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+								loop using while <condition> loop
+declare 
+	ctr number := 5;
+begin
+	while ctr <>0 loop
+		dbms_output.put_line('Counter is: '||ctr);
+		ctr := ctr-1;
+	end loop;
+end;
+/	
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+								FOR Loop
+begin
+For ctr in 1..5 loop
+	dbms_output.put_line('Counter is: '||ctr);
+end loop;
+end;
+/
+
+observe:
+Declare section is optional
+there is no need to declare the counter variable (ctr in this case). It is declared implicitly
+The begin - end is required. Show the error without begin - end
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+								FOR loop - decreasing counter
+
+begin
+For ctr in REVERSE 1..5 loop
+	dbms_output.put_line('Counter is: '||ctr);
+end loop;
+end;
+/
+Observe:
+The reverse keyword is there, but still you write the lower bound first and higher bound later
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+
+								FOR Loop - counter increment more than 1
+Problem: print all numbers from 1 to 20 which are multiples of 5
+
+begin
+For ctr in  11..20 loop
+	if mod(ctr,5) = 0 then
+		dbms_output.put_line('Counter is: '||ctr);
+	end if;
+end loop;
+end;
+/
+
+
+
+begin
+for ctr in 0..20 loop
+	dbms_output.put_line(ctr);
+	end loop;
+end;
+/
+
+
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+
+											FOR loop with premature exit condition	
+begin
+For ctr in  1..40 loop
+	if mod(ctr,5) = 0 then
+		dbms_output.put_line('Counter is: '||ctr);
+	end if;
+	if ctr >= 20 then
+		exit;
+	end if;
+end loop;
+end;
+/
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+														GOTO								
+begin
+dbms_output.put_line('hello1');
+GOTO THIRD;
+dbms_output.put_line('hello2');
+<<THIRD>>
+dbms_output.put_line('hello3');
+end;
+/
+Note:
+After the label, there must be at least one executable statement. If there is nothing to be done, just write NULL with a semicolon.
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+													CURSOR WITH FOR LOOP
+
+drop table emp4;
+
+create table emp4 (
+empid number (3),
+empname varchar(20),
+dept_name varchar(20),
+salary number(6)
+);
+
+insert into emp4 values (101, 'Lalit', 'Physics', 40000);
+insert into emp4 values (102, 'Suresh', 'Music', 50000);
+insert into emp4 values (103, 'Ganesh', 'History', 60000);
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+declare 
+	cursor c1 is select empid, empname, dept_name, salary from emp4;
+begin
+	for record in c1 loop
+		dbms_output.put_line('empid '||record.empid);
+		dbms_output.put_line('empname '||record.empname);
+		dbms_output.put_line('dept_name '||record.dept_name);
+		dbms_output.put_line('salary '||record.salary);
+	end loop;
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+declare 
+	cursor c2 is select name from emp;
+	empname varchar(30);
+begin 
+open c2;
+loop
+fetch c2 into 
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+															SIMPLE PROCEDURE
+create or replace procedure sample (A IN number, B OUT number, C IN OUT number) is 
+begin 
+	B := A * 2;
+	C := C*5;
+end;
+/
+
+declare
+	P number := &enter_p;
+	Q number;
+	R number := &enter_r;
+begin
+sample(P,Q,R);
+	dbms_output.put_line('P: '||P);
+	dbms_output.put_line('Q: '||Q);
+	dbms_output.put_line('R: '||R);
+end;
+/
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+										Take a numeric input and display hello - Procedure
+
+create or replace procedure lalit21 (emp_number IN number)
+is 
+begin
+	dbms_output.put_line('Hello');
+end;
+/
+
+Declare
+	emp_number number := &enter_emp_number;
+begin
+	lalit21(emp_number);
+end;
+/
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+Create or replace procedure display (pempid IN number)
+Is
+	bookrec book%rowtype;	
+Begin
+	Dbms_output.put_line(‘hello’);
+	Select * from  book into bookrec;
+End;
+/
+
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+										Take a char input and display hello - Procedure
+
+create or replace procedure lalit22 (emp_name IN varchar) 	-- the length of variable is NOT allowed here
+is 
+begin
+	dbms_output.put_line('Hello');
+end;
+/
+
+Declare
+	emp_name varchar(10) := &enter_emp_name;               -- The length of variable must be mentioned. Enter the name within semi colons
+begin
+	lalit22(emp_name);
+end;
+/
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+										Take a char input and display the same - Procedure
+
+create or replace procedure lalit23 (emp_name IN varchar)
+is 
+begin
+	dbms_output.put_line(emp_name);
+end;
+/
+
+Declare
+	emp_name varchar(10) := &enter_emp_name;               -- Enter the name in semi colons
+begin
+	lalit23(emp_name);
+end;
+/
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							Working - Take empid, increment as input, increase the salary by given amount
+
+
+	
+drop table emp4;
+create table emp4 (
+empid number (3),
+empname varchar(20),
+dept_name varchar(20),
+salary number(6)
+);
+
+insert into emp4 values (101, 'Lalit', 'Physics', 40000);
+insert into emp4 values (102, 'Suresh', 'Music', 50000);
+insert into emp4 values (103, 'Ganesh', 'History', 60000);
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						
+set serveroutput on;
+create or replace procedure incr_annual(pempid IN number, pincrement IN number, pnew_sal OUT number) is
+begin 
+	update emp4
+	set salary =salary+pincrement
+	where emp4.empid=pempid;
+	commit;
+	select salary into pnew_sal from emp4 where emp4.empid=pempid;
+end;
+/
+declare 
+	aempid number := &enter_empid;			-- enter empid
+	aincrement number := &enter_inc;
+	anew_sal number;
+begin
+	incr_annual(aempid, aincrement, anew_sal);
+	dbms_output.put_line(anew_sal);
+end;
+/
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+							Working - Take empname, increment as input, increase the salary by given amount
+
+set serveroutput on;
+create or replace procedure incr2_annual(pempname IN varchar, pincrement IN number, pnew_sal OUT number) is
+begin 
+	update emp4
+	set salary =salary+pincrement
+	where emp4.empname=pempname;
+	commit;
+	select salary into pnew_sal from emp4 where emp4.empname=pempname;
+end;
+/
+declare 
+	aempname varchar(10) := &enter_empname;			-- enter empname in single quotes
+	aincrement number := &enter_inc;
+	anew_sal number;
+begin
+	incr2_annual(aempname, aincrement, anew_sal);
+	dbms_output.put_line(anew_sal);
+end;
+/	
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++											
+
+												

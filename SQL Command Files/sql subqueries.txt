@@ -1,0 +1,69 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+set linesize 160
+set pagesize 40
+set serveroutput on;
+cl scr
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														SQL Sub Queries
+Find the details of all those employees who are working in any department.
+
+drop table emp;						
+create table emp (
+	eid number (3),
+	name varchar2(10),
+	address varchar(10)
+	);
+insert into emp values (1, 'A', 'Delhi');
+insert into emp values (2, 'B', 'Pune');
+insert into emp values (3, 'A', 'Chd');
+insert into emp values (4, 'B', 'Delhi');
+insert into emp values (5, 'C', 'Pune');
+insert into emp values (6, 'D', 'Mumbai');
+insert into emp values (7, 'E', 'Hyd');
+
+drop table dept;
+create table dept (
+	did varchar2(2),
+	dname varchar2(10),
+	eid number (3)
+	);
+insert into dept values ('D1', 'HR', 1);
+insert into dept values ('D2', 'IT', 2);
+insert into dept values ('D3', 'MRKT', 3);
+insert into dept values ('D4', 'Testing', 4);
+
+-- logic: the outer query is executed first. For each tuple of outer query, some variables of outer query are used inside the inner query
+-- and the inner query is executed for all the tuples.
+-- in the present case, one tuple is read from the emp table. its eid id compared with eid of all the tuples in table dept. Even if a
+-- single match is found, EXISTS returns TRUE and the required attributes of emp table are displayed.
+
+
+For each tuple of outer query, all the tuples of inner query are compared
+
+the values of outer query are used insdie the inner query. 
+select * from emp where 
+exists (select * from dept where dept.eid= emp.eid);
+
+select * from emp
+where eid IN (select eid from dept);
+
+select emp.eid, emp.name, emp.address from emp, dept where emp.eid = dept.eid;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+											Find the Nth highest salary in emp table
+drop table emp;
+create table emp (
+		id number(3),
+		salary number(6)
+		);
+insert into emp values (1, 10000);
+insert into emp values (2, 20000);
+insert into emp values (3, 20000);
+insert into emp values (4, 30000);
+insert into emp values (5, 40000);
+insert into emp values (6, 50000);
+
+-- Put the value of N-1 in the comparison expression
+
+select id, salary from emp e1
+where 3 = (select count(distinct salary) from emp e2 where e2.salary > e1.salary);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

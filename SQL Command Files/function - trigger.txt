@@ -1,0 +1,141 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														PREDEFINED FUNCTIONS
+
+select concat(rtrim('Lalit     '), 'Kumar') from dual;
+select concat(rtrim('Lalit.....', '.'), 'Kumar') from dual;
+
+select replace ('Bhagwan Das', 'Bhagwan', 'Bhagya') from dual;
+select replace ('Bhagwan Das', 'Bhagwan', null) from dual;
+select replace ('Bhagwan Das', 'Bhagwan') from dual;
+
+select substr('Mirza Ismail Road',6, 8) from dual;
+
+select translate ('fumble', 'uf', 'aR' ) from dual; Ramble
+
+Agarwal
+Agrawal
+
+
+select translate ('fumble', 'uf', 'a' ) from dual;
+
+select translate ('ufABCD', 'uf', 'a' ) from dual;     aABCD
+
+select translate ('ufabcd', 'uf', 'aR' ) from dual;
+
+select trim ('   Lalit Kumar    Jain    ') from dual;
+select trim ('...Lalit Kumar    Jain....', '.') from dual; /* does not work */
+select trim ('...Lalit Kumar    Jain....', ".") from dual; /* does not work */
+
+select ltrim ('...Lalit Kumar    Jain....', '.') from dual;
+select rtrim ('...Lalit Kumar    Jain....', '.') from dual;
+
+select rtrim( ltrim('...Lalit Kumar    Jain....', '.'), '.') from dual;
+select abs(-62) from dual;
+select ceil (7.6), ceil(7.5), ceil (7.4) from dual;
+select round (7.6), round(7.5), round (7.4) from dual;
+select floor (7.6), floor(7.5), floor (7.4) from dual;
+select sin (1), cos(1), tan(1) from dual;
+select exp(1), exp (2) from dual;
+select log(10,100), log(2.71, 100), log (8,64), log (3, 27) from dual;
+select mod(84, 10), mod(-84, 10) from dual;
+select power (2, 10), power (10,2), power(-3, 3) from dual;
+select sign(24), sign (-24), sign(0) from dual;
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+												Some More Predefined Functions
+select sqrt(45) from dual;
+select trunc(34.6) from dual;
+select trunc(34.4) from dual;
+select add_months(to_date('11-09-2021', 'DD-MM-YYYY'), 2) from dual;
+select add_months(to_date('11-09-2021', 'DD-MM-YYYY'), 2.1) from dual;
+select add_months(to_date('11-09-2021', 'DD-MM-YYYY'), 2.9) from dual;
+select last_day(to_date('11-09-2021', 'DD-MM-YYYY')) from dual;
+select months_between(to_date('11-02-2022', 'DD-MM-YYYY'), to_date('19-11-2021', 'DD-MM-YYYY')) from dual;
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+													SIMPLE FUNCTION
+create or replace function addn(A IN number, B IN number) return number
+is
+C number;
+begin 
+	C := A+B;
+	return (C);		-- The bracket in the return can be omitted
+end;
+/
+
+variable emp_name varchar2(10);
+exec :emp_name:='Ganesh';
+:emp_name:=&enter_name;				-- no error but no effect also
+print :emp_name;				-- no error but no effect also
+dbms_output.put_line(:emp_name);		-- no error but no effect also
+declare
+	P number := &Enter_P;
+	Q number := &Enter_Q;
+	R number;
+begin
+	R:=addn(P,Q);
+	dbms_output.put_line('P:'||P||', Q: '||Q||', R: '||R);
+	dbms_output.put_line(:emp_name);	-- initial hard coded value displayed
+end;
+/
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+											TRIGGERS
+							Create the table emp4
+
+set serveroutput on;
+	
+drop table emp4;
+create table emp4 (
+empid number (3),
+empname varchar(20),
+dept_name varchar(20),
+salary number(6)
+);
+
+insert into emp4 values (101, 'Lalit', 'Physics', 40000);
+insert into emp4 values (102, 'Suresh', 'Music', 50000);
+insert into emp4 values (103, 'Ganesh', 'History', 60000);
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+set serveroutput on;
+											ROW LEVEL TRIGGERS
+create or replace trigger emp4_trg1
+after update on emp4 for each row
+begin
+dbms_output.put_line('Row Updated');
+end;
+/
+
+select * from emp4;
+update emp4 set salary = salary +1000 where salary <= 55000;
+
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+													STATEMENT LEVEL TRIGGERS
+drop trigger system_tr1;	-- drop the trigger created earlier
+drop table emp5;
+drop table emp6;													
+
+create or replace trigger system_tr1
+after drop on system.schema
+begin
+dbms_output.put_line('User created dropped msg');
+end;
+/
+
+set serveroutput on;
+cl scr;
+
+drop table emp5;
+create table emp5 as (
+select * from emp4);
+drop table emp5;
+
+drop table emp6;
+create table emp6 as (
+select * from emp4);
+drop table emp6;
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

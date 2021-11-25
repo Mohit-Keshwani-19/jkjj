@@ -1,0 +1,1893 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++				
+													OFTEN USED COMMANDS
+
+CTRL+C to interrupt the display
+set linesize 160
+ser pagesize 25
+set serveroutput on
+clear screen
+cl scr
+
+desc <tablename>;
+describe <tablename>;
+
+select table_name from user_tables;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+select table_name,cluster_owner from user_tables;
+select * from dba_objects;
+select owner, object_name from dba_objects where object_type='table';
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+											SET THEORY, SUPER KEY, CANDIDATE KEY
+
+
+First 	Last 	ID	Father		Desig		Salary
+
+Lalit	Jain 	 101	Madan		Asst Prof 	5000
+Ashok	Sharma 	 105	Kriparam	Prof 		6000
+Lalit	Jain 	 102	Mohit		Prof 		7000
+
+We can write this schema as 
+
+R(First, Last, ID, Father, Desig, Salary)
+
+Superkey: A single attribute or a group o attributes whihc can identify each record of the table clearly.
+Minimal Super Key: A superkey from which you cannot remove any attribute without spoiling its status as a super key.
+Candidate Key: All minimal keys are candidate keys to becoem a primary key.
+Primary key: One of the candidate key is declared as a primary key.
+
+In the above example:
+
+K={ID} 						superkey, candidate key
+K={First, Last, Father} 			Superkey, Candidate Key
+K={Last, First, ID, Father} 			Superkey but not a candidate key
+			
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+													RELATIONAL ALGEBRA EXERCISES
+
+Select a.staffid, a.staffname, a.staffemail, a.staffmobile, b.managerid,b.managername,b.room, b.building
+From staff a, boss b
+Where a.managerid=b.managerid
+Order by b.managername;
+
+
+Select staffid, staffname, staffemail, staffmobile, boss.managerid, managername, room, building 
+From staff, boss
+Where managerid(staff)=managerid(staff)
+Order by managername;
+
+
+
+
+
+((((((((((((((((((((((((((((((((((((((
+													PROCEDURAL / NON PROCEDURAL
+
+Procedural - specify what you want, and HOW it will be done
+Non Procedural/ Declarative  - SQL - u specify what u want.
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+											Table with 2 attributes in primary key
+
++++++++++++++++++++++++++++++++++
+create table addr (
+	acity varchar (20),
+	astate varchar(20),
+	ahouse varchar(10),
+	astreet varchar(20),
+	aloc varchar(20),
+	apin numeric(6),
+	primary key (acity, astate)
+	);
+
+Create table emp (
+	ecode numeric(3),
+	ename varchar(20),
+	ecity varchar(20),
+	estate varchar(20),
+	foreign key (ecity, estate) references addr
+	on delete set null
+	);
+
+insert into addr values ('Kota', 'Rajasthan', '1-K-19', Null, 'Vigyan Nagar', 324005);
+insert into addr values ('Kota', 'Tamil Nadu', '301-A', 'Rajaji Street', ' Anna Salai', 600040);
+insert into addr values ('Ramgarh', 'Rajasthan', '101', 'Gandhi Marg', 'Subhash Nagar', 333031);
+insert into addr values ('Ramgarh', 'Uttar Pradesh', 'A501', 'Ambe Marg', 'Gomti Nagar', 400100);
+insert into addr values ('MugalSarai', 'Telangana', 'K-101', 'Nizam Road', 'Ramoji City', 500100);
+insert into addr values ('MugalSarai', 'Bihar', '1210-A', 'Rajendra Road', 'Gandhi Nagar', 600200);
+
+insert into emp values (101, 'Lalit', 'Kota', 'Rajasthan');
+insert into emp values (102, 'John', 'Kota', 'Tamil Nadu');
+insert into emp values (103, 'Suresh', 'Kota', 'rajasthan');
+insert into emp values (104, 'Farhan', 'Mugal Sarai', 'Telangana');
+insert into emp values (105, 'Javed', 'MugalSarai', 'Telangana'); 
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++			
+												TEMPORARY VIOLATION OF A CONSTRAINT
+create table couple (
+member varchar(20),
+spouse  varchar(20), 
+primary key(member),
+foreign key (spouse) references couple
+);
+
+insert into couple values ('Lalit', 'Kiran');
+insert into couple values ('Kiran', 'Lalit');
+
+insert into couple values ('Lalit', Null);
+insert into couple values ('Kiran', Null);
+
+update couple
+set spouse='Kiran' where member='Lalit';
+
+update couple
+set spouse='Lalit' where member='Kiran';
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														INITIALLY DEFERRED
+
+
+create table couple (
+member varchar(20),
+spouse  varchar(20), 
+primary key(member),
+foreign key (spouse) references couple initially deferred
+);
+
+insert into couple values ('Lalit', 'Kiran');
+insert into couple values ('Kiran', 'Lalit');
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+
+
+
+
+(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+															SYNTAX
+															++++++
+															++++++
+
+-- general syntax of a query
+
+select A1, A2, ..., An
+from r1, r2, ..., rm
+where P;
+
+-- where A are attributes, r are relations , P is predicate
+
++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+update emp set name='AnilSharma', city='London' where empid=101; 
+
+truncate table emp2;  
+
+-------- table with primary key ---------------
+CREATE TABLE cust    
+( id number(10) NOT NULL,    
+  name varchar2(50) NOT NULL,    
+  city varchar2(50),  
+CONSTRAINT customers_pk PRIMARY KEY (id)      
+); 
+
++++++++++++++++++++++++++++++++++++++++
+/* this
+comment
+is a multiline
+comment */
+
+-- This is a single line comment
+
+-- observe the mathematical expression
+
+Select empid, salary from emp;
+Select empid, salary*1.2 from emp;
+
+The salary stored in the table does not get affected. Modified value is DISPLAYED only.
+
+Alter table emp
+Add PIN numeric(6);
++++++++++++++++++++++++++++++++++++++++++
+drop table emp;
+
+create table emp (
+empid numeric(3),
+salary numeric(8,2)
+);
+
+insert into emp values (101, 80000.50);
+insert into emp values (201, 60000);
+insert into emp values (301, 150000.00);
+
+Alter table emp
+Add (PIN numeric(6), name varchar(20));
+
+Alter table emp
+Drop column name;
+
+Alter table emp
+Drop column PIN;
+
+Alter table emp
+Add PIN numeric(6);
+
+create table emp2 as
+select * from emp;
+
+alter table emp
+modify name varchar(30);
+
+alter table emp
+modify (name varchar(35), salary numeric(10,2));
+
+alter table emp2
+rename to emp4;
+
+insert into emp values (105, null, null, null);
+
+update emp
+set name=’Arpit’
+where empid=105;
+
+alter table emp
+drop column pin;
+
+
+-- rename a column empid as employee_id for display only
+
+select empid as employee_id, salary
+from emp;
+
+-----------------------------------------------
+-- rename tables  (keyword AS not permitted)
+
+select T.salary, S.loc
+from emp T, addr S
+where T.empid=S.empid;
+-------------------------
+
+														***Data Types***
+
+drop table C;
+
+create table C (
+name1 char(10),
+name2 character(10),
+name3 varchar(10),
+name4 character varying (10),
+salary1 numeric(8,2),
+tax1 real,
+tax2 double precision,
+tax3 float(8), tax4 smallint,
+name5 varchar2(10),
+salary2 number(10)
+);
+----------------------------
+													***DISTINCT keyword***
+
+create table P (
+empid numeric(3),
+name varchar(10)
+);
+
+insert into P values (101, 'Lalit');
+insert into P values (102, 'Sunil');
+insert into P values (103, 'Abdul');
+insert into P values (103, 'John');
+
+select distinct empid, name from P;
+select distinct empid from P;
+----------------------------------------
+select * from emp
+where salary <=80000
+order by salary ;
+
+++++++++++++++++++++++++++++++++++++++
+													Group By:
+
+drop table emp;
+
+create table emp (
+empid numeric(3),
+dept varchar(10),
+salary numeric(8,2)
+);
+
+insert into emp values (101, ‘MATH’, 80000);
+insert into emp values (115, ‘MATH’, 85000);
+insert into emp values (165, ‘MATH’, 60000);
+insert into emp values (201, ‘PHY’, 60000);
+insert into emp values (478, ‘CHEM’, 65000);
+insert into emp values (485, ‘CHEM’, 92000);
+insert into emp values (301, ‘MATH’, 70000);
+insert into emp values (401, ‘PHY’, 120000);
+insert into emp values (411, ‘CHEM’, 90000);
+insert into emp values (423, ‘CHEM’, 95000);
+insert into emp values (237, ‘PHY’, 98000);
+insert into emp values (117, ‘MATH’, 70000);
+insert into emp values (447, ‘CHEM’, 130000);
+insert into emp values (254, ‘PHY’, 82000);
+
+create table emp2 as
+(select * from emp)
+order by dept;
+
+													Aggregate Functions
+
+Select avg(salary) from emp;
+
+Select avg(salary) from emp where dept=’PHY’;
+
+The below will not work (have to use group by)
+
+Select dept, avg(salary) from emp;
+
+The following will also give error:
+
+Select dept, avg(salary) from emp
+Where dept =’PHY’ or dept=’MATH’;
+
+Select dept, avg(salary) from emp
+group by dept;
+
+select dept, count(*) from emp
+group by dept;
+
+select dept, min(salary) from emp2
+group by dept;
+
+
+select dept, max(salary) from emp2
+group by dept;
+select dept, sum(salary) 
+from emp
+group by dept
+having sum(salary) > 100000;
+
+select dept, sum(salary) 
+from emp
+group by dept
+having sum(salary) <= 100000;
+
+Select dept, avg(salary) from emp
+Where dept =’PHY’ or dept=’MATH’
+group by dept
+having avg(salary)>=75000;
+
+----------------------------
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+													-- Cartesian Product
+
+drop table addr;
+
+create table addr (
+empid numeric(3),
+loc varchar(20),
+city varchar(20)
+);
+
+insert into addr values (101, 'Bapu Nagar', 'Jaipur');
+insert into addr values (201, 'Vigyan Nagar', 'Kota');
+insert into addr values (301, 'Pratap Nagar', 'Udaipur');
+insert into addr values (401, 'Sanganer', 'Jaipur');
+
+ -- observe the 3 x 4 rows
+select * from emp, addr; 
+
+-------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														-- natural join
+
+select * from emp, addr where emp.empid=addr.empid;
+
+-- the same thing can be achieved by using natural join
+
+select * from emp natural join addr;
+
+
+											**Natural Join with 2 common attributes**
+Drop table course;
+Create table course (
+Dept varchar(10),
+Courseid varcjar(10),
+Coursetitle varchar(30),
+Credits numeric(1)
+);
+
+Insert into course values (‘MATH’, ‘MATH101’, ‘Calculus-1’, 5);
+Insert into course values (‘PHY’, ‘PHY101’, ‘Mechanics’, 4);
+Insert into course values (‘CHEM’, ‘CHEM101’, ‘Physical Chemistry’, 4);
+Insert into course values (‘MECH’, ‘MECH101’, ‘Engineering Drawing’, 4);
+Insert into course values (‘EEE’, ‘ENGG101’, ‘Measurement Techniques’, 3);
+
+Drop table section;
+Create table section (
+Dept varchar(10),
+Courseid varcjar(10),
+Section varchar(1),
+Room num(3),
+Block varchar(5),
+DaySlot num(1),
+Timeslot num (1)
+);
+
+Insert into section values (‘MATH’, ‘MATH101’, ‘A’, 301, ‘RED’, 1, 3);
+Insert into section values (‘PHY’, ‘PHY101’, ‘A’, 302, ‘RED’, 1, 4);
+Insert into section values (‘CHEM’, ‘CHEM101’, ‘B’, 301, ‘RED’, 2, 3);
+Insert into section values (‘MECH’, ‘MECH101’, ‘B’, 301, ‘RED’, 2, 4);
+Insert into section values (‘MECH,’, MECH102’, ‘Workshop Techniques’, 303, ‘GRN’, 2, 5);
+
+Select * from course, section;
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+														IN , BETWEEN
+
+Select * from emp
+Where dept=’MATH’ or dept=’PHY’;
+
+Select * from emp
+Where dept in (‘MATH’, ‘PHY’);
+
+Select * from emp
+Where salary >=70000 and salary<=90000;
+
+Select * from emp
+Where salary between 70001 and 89999;
+
+select dept, avg(salary) from emp
+where dept =’PHY’ or dept =’MATH’
+group by dept;
+
+select dept, avg(salary) from emp
+where dept in (‘PHY’, ‘MATH’)
+group by dept;
+
+select dept, avg(salary) from emp
+group by dept
+having avg(salary) >=81000 and avg(salary) <=91000;
+
+select dept, avg(salary) from emp
+group by dept
+having avg(salary) between 73000 and 91000; 
+
+select dept, avg(salary) from emp
+where dept in (‘PHY’,’MATH’)
+group by dept
+having avg(salary) between 73000 and 91000;
+
+-----------------------------------
+													PRIMARY & FOREIGN KEY
+
+drop table COURSES;
+create table COURSES (
+	CourseID varchar(10),	
+	CourseName varchar (20),	
+	TeacherID varchar(10),
+        	primary key (CourseID),
+              foreign key (teacherid) references instructor
+	);
+
+REFERENCED Table
+REFERENCING Table
+
+insert into COURSES values ('MATH101', 'Calculus-1', 'M10001');
+insert into COURSES values ('PHY101', 'Mechanics', 'P20001');
+insert into COURSES values ('CHEM101', 'Inorganic Chem', 'C30001');
+insert into COURSES values ('LANG101', 'English-1', 'L40001');
+insert into COURSES values ('demo', 'English-1', 'L40001');
+
+insert into COURSES values ('PHY102', 'Optics', 'P20005');
+
+the below will give error
+insert into COURSES values ('MATH102', 'Linear Algebra', 'M10002');
+
+drop table INSTRUCTOR;
+create table INSTRUCTOR (
+	TID varchar(10),
+	InstructorName varchar(15),
+	RoomNum numeric (3),
+	ResearchArea varchar(25),
+	Primary key (TID)
+	);
+
+insert into INSTRUCTOR values ('M10001', 'Gokul Sharma',401, 'Graph Theory');
+insert into INSTRUCTOR values ('P20001', 'Rita Singh', 311, 'Newtonian Mechanics');
+insert into INSTRUCTOR values ('C30001', 'Gaurav Meena', 507, 'Exothermic Processes');
+insert into INSTRUCTOR values ('L40001', 'Zahid Ahmed', 204, 'Oscar Wilde');
+insert into INSTRUCTOR values ('G50001', 'Subodh Gandhi', 204, 'Physical Fitness');
+insert into INSTRUCTOR values ('G50002', 'Riny Joseph', 904, 'Music');
+
+														--cartesian product
+select * from courses, instructor;
+
+--natural join
+Select *
+From courses natural join instructor;
+
+Select courseid, instructorid 
+from courses 
+where courseid=’MATH101’;
+
+Recreate COURSES table with foreign key relationship
+
+drop table COURSES;
+create table COURSES (
+	CourseID varchar(10),	
+	CourseName varchar (20),	
+	InstructorID varchar(10),
+        	primary key (CourseID),
+foreign key (instructorid) references instructor
+	);
+-------------------------------------------------------------
+
+												Natural Join with 2 common attributes
+
+Drop table course1;
+Create table course1 (
+Dept varchar(10),
+Courseid varchar(10),
+Coursetitle varchar(30),
+Credits numeric(1)
+);
+Insert into course1 values (‘MATH’, ‘MATH101’, ‘Calculus-1’, 5);
+Insert into course1 values (‘PHY’, ‘PHY101’, ‘Mechanics’, 4);
+Insert into course1 values (‘CHEM’, ‘CHEM101’, ‘Physical Chemistry’, 4);
+Insert into course1 values (‘MECH’, ‘MECH101’, ‘Engineering Drawing’, 4);
+Insert into course1 values (‘EEE’, ‘ENGG101’, ‘Measurement Techniques’, 3);
+
+Drop table section;
+Create table section (
+Dept varchar(10),
+Courseid varchar(10),
+Section varchar(1),
+Room numeric(3),
+Block varchar(5),
+DaySlot numeric(1),
+Timeslot numeric(1)
+);
+Insert into section values (‘MATH’, ‘MATH101’, ‘A’, 301, ‘RED’, 1, 3);
+Insert into section values (‘PHY’, ‘PHY101’, ‘A’, 302, ‘RED’, 1, 4);
+Insert into section values (‘CHEM’, ‘CHEM101’, ‘B’, 301, ‘RED’, 2, 3);
+Insert into section values (‘MECH’, ‘MECH101’, ‘B’, 301, ‘RED’, 2, 4);
+Insert into section values (‘MECH’, ‘MECH102’, ‘C’, 303, ‘GRN’, 2, 5);
+
+Select * from course1, section;
+
+Primary Key used as foreign key also
+
+Referenced tables are normally master tables
+Referencing tables reference them
+
+drop table addr;
+
+create table addr (
+empid numeric(3),
+loc varchar(20),
+city varchar(20),
+primary key (empid)
+);
+
+insert into addr values (101, 'Bapu Nagar', 'Jaipur');
+insert into addr values (201, 'Vigyan Nagar', 'Kota');
+insert into addr values (301, 'Pratap Nagar', 'Udaipur');
+insert into addr values (401, 'Sanganer', 'Jaipur');
+
+drop table emp2;
+
+create table emp2 (
+empid numeric(3),
+dept varchar(10),
+salary numeric(8,2),
+primary key (empid),
+foreign key (empid) references addr
+);
+
+insert into emp2 values (101, ‘MATH’, 80000);
+insert into emp2 values (201, ‘PHY’, 60000);
+insert into emp2 values (301, ‘MATH’, 70000);
+insert into emp2 values (401, ‘PHY’, 120000);
+insert into emp2 values (501, ‘CHEM’, 90000);
+
+++++++++++++++++++++++++++++++++
+													PRIMARY & FOREIGN KEY EXERCISE
+								**PUB TABLE**
+drop table pub;
+
+create table pub (
+pcode char (2),
+pname varchar (10),
+pemail varchar (20),
+pphone numeric(10),
+primary key(pcode)
+);
+
+Insert into pub values (‘P1’, ‘BPB’, ‘bpd@gmail.com’, 1234567890);
+Insert into pub values (‘P2’, ‘Khanna’, ‘khanna@gmail.com’, 4567891230);
+Insert into pub values (‘P3’, ‘Galgotia’, ‘galgotia@gmail.com’, 7891234560);
+
+delete from pub
+where pcode='P1';
+
+update pub
+set pcode='P1' where pname='BPB';
+
+Insert into pub values (‘P6’, ‘PHI’, ‘phi@gmail.com’, 7891234560);
+
+
+
+
+ALTER table pub
+primary key(pcode);
+
+								**AUTHOR TABLE**
+
+Drop table auth;
+
+create table auth (
+acode char (2),
+aname varchar (10),
+aemail varchar (20),
+aphone numeric(10)
+);
+
+
+Insert into auth values (‘A1’, ‘Donovan’, ‘donovan@gmail.com’, 1234567890);
+Insert into auth values (‘A2’, ‘Tenanbaum’, ‘tenanbaum@gmail.com’, 4567891230);
+Insert into auth values (‘A3’, ‘Acharya’, ‘acharya@gmail.com’, 7891234560);
+-------------------------------------------------------------
+								**BOOK TABLE**
+
+drop table book;
+
+create table book (
+Bookcode char (10),
+Title varchar (30),
+Pcode char(2),
+Acode char(2),
+foreign key (pcode) references pub on delete cascade
+);
+
+Insert into book values (‘BOOK101’, ‘Java Programming’, ‘P2’, ‘A3’);
+Insert into book values (‘BOOK102’, ‘Database Concepts’, ‘P3’, ‘A1’);
+Insert into book values (‘BOOK103’, ‘Networking’, ‘P1’, ‘A2’);
+
+select bookcode, title, book.pcode, pname, book.acode, aname
+from pub, auth, book
+where book.pcode=pub.pcode and book.acode=auth.acode;
+
+								**OUTER JOIN**
+
+select bookcode, title, pub.pcode, pname
+from pub left outer join book
+ON book.pcode=pub.pcode ;
+
+
+select bookcode, title, book.pcode, acode, pub.pcode,pname, pemail, pphone
+from book full outer join pub
+ON book.pcode=pub.pcode;
+
+
+
+
+((((((((((((((((((((((((((((((((((((((((((((((((((((((
+-------------------------------------------------------
+
+
+
+The tables are not joined with each other and by mistake we can enter a book with non existing publisher or author 
+
+Insert into book values (‘BOOK104’, ‘Fortran Programming’, ‘P4’, ‘A3’);
+Insert into book values (‘BOOK105’, ‘Cobol Programming’, ‘P2’, ‘A5’);
+Recreate tables with primary key
+
+								**PARENT and CHILD RECORDS**
+Try to delete linked records
+Delete
+From b
+Where code=’P3’;
+
+Delete the child record first
+
+Delete 
+From a
+Where pcode=’P3’;
+
+--------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															UNION
+Create 2 tables having same number and type of attributes.
+
+Drop table A;
+Create table A (
+		ID numeric(3),
+		Name char (20),
+		Dept char(10)
+		);
+Insert into A values (101, ‘Lalit’, ‘MATH’);
+Insert into A values (102, ‘Anil’, ‘PHY’);
+Insert into A values (103, ‘Pratap’, ‘ENGL’);
+
+Drop table B;
+Create table B (
+		ID numeric(3),
+		Name char (20),
+		Dept char(10)
+		);
+
+Insert into B values (201, ‘Hari’, ‘MATH’);
+Insert into B values (202, ‘John’, ‘PHY’);
+Insert into B values (203, ‘Paramjeet’, ‘ENGL’);
+Insert into B values (103, ‘Pratap’, ‘ENGL ’);
+Insert into B values (302, ‘Anil’, ‘PHY’);
+
+
+Select * from a
+Union 
+Select * from b;
+------------------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+													UNION ALL
+
+Select * from a
+Union all
+Select * from b;
+
+Select name, dept from a
+Union all
+Select name, dept from b;
+
+Select * from a
+Union
+Select * from b;
+
+
+
+
+Select * from A where dept=’ENGL’
+Union
+Select * from B where dept=’PHY’;
+--------------------------------------------------------------
+Now insert another Pratap
+
+Insert into A values (104, ‘Pratap’, ‘ENGL’);
+
+Below command will show both the tuples of Pratap, as ID makes them unique
+
+Select * from A where dept=’ENGL’
+Union
+Select * from B where dept=’PHY’;
+
+Below command will display only 1 tuple of Pratap, as name and dept are same in both the tuples and hence any duplicate will be removed.
+
+Select name, dept from A where dept=’ENGL’
+Union
+Select name, dept from B where dept=’PHY’;
+---------------------------------------------------------
+The following command will not drop the duplicate records which have the same Pratap, ENGL values
+
+Select name, dept from A 
+Union all
+Select name, dept from B ;
+The following command will drop the duplicate records which have the same Pratap, ENGL values
+
+Select name, dept from A 
+Union
+Select name, dept from B ;
+
+--------------------------------------------------
+Can you use UNION operator for the result set of these 2 relations?
+
+Drop table C;
+Create table C (
+		ID numeric(3),
+		Name varchar (20)		
+		);
+Drop table D;
+Create table D (
+		ID numeric(3),
+		Dept varchar(20)
+		);
+Insert into C values (101, ‘Lalit’);
+Insert into C values (102, ‘Anil’);
+Insert into C values (103, ‘Pratap’);
+Insert into C values (104, ‘Pratap’);
+
+Insert into D values (201,  ‘MATH’);
+Insert into D values (202, ‘PHY’);
+Insert into D values (203, ‘ENGL’);
+
+Select * from C
+Union
+Select * from D;
+
+Select * from C
+Union all
+Select * from D;
+
+Select name from C
+Union
+Select dept from D;
+
+Select name from C
+Union all
+Select dept from D;
+----------------------------------
+Can you use UNION operator when the source relations have different number of attributes?
+
+Drop table E;
+Create table E (
+		ID numeric(3),
+		Name varchar (20),
+		Dept varchar(10), 
+		Salary numeric (8,2)
+		);
+Drop table F;
+Create table F (
+		ID numeric(3),
+		Name varchar (20),
+		Age numeric(3)
+		);
+Insert into E values (101, ‘Lalit’, ‘MATH’, 7000);
+Insert into E values (102, ‘Anil’, ‘PHY’, 8000);
+Insert into E values (103, ‘Pratap’, ‘ENGL’, 9000);
+Insert into E values (104, ‘Pratap’, ‘ENGL’, 10000);
+
+
+Insert into F values (201, ‘Hari’, 41);
+Insert into F values (202, ‘John’, 42);
+Insert into F values (203, ‘Paramjeet’, 43);
+Select * from e
+Union all
+Select * from f;
+
+
+Select ID, name from E
+Union all
+Select ID, name from F;
+-------------------------------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															INTERSECT
+
+Drop table G;
+Create table G (
+		ID numeric(3),
+		Name varchar (20),
+		Dept varchar(10), 
+		Salary numeric (8,2)
+		);
+Drop table H;
+Create table H (
+		ID numeric(3),
+		Name varchar (20),
+		Age numeric(3)
+		);
+Insert into G values (101, ‘Lalit’, ‘MATH’, 7000);
+Insert into G values (102, ‘Anil’, ‘PHY’, 8000);
+Insert into G values (103, ‘Pratap’, ‘ENGL’, 9000);
+Insert into G values (104, ‘Guru’, ‘ENGL’, 10000);
+
+Insert into H values (101, ‘Lalit’, 51);
+Insert into H values (102, ‘Anil’, 52);
+Insert into H values (103, ‘Pratap’, 53);
+Insert into H values (104, ‘Harish’,54);
+
+The below command will give error as the numbers of attributes in the result set are not same
+
+Select id, name  from G
+intersect
+Select id, name from H;
+
+This command will be accepted. Only records where ID and name match will be displayed
+
+Select ID, name from G
+Intersect
+Select ID, name from H;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															MINUS
+Select ID, name from h
+minus
+Select ID, name from g;
+
+
+Select id, name from h
+Minus
+Select id, name from g;
+
+
+
+
+Now all the 4 ID numbers will be displayed as you are not selecting the name column
+
+Select ID from G
+Intersect
+Select ID from H;
+-------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															MINUS
+
+The first select will select 4 tuples. Out of these, 3 appear in the second select statement and those 3 will be removed from the result set.
+
+Select id, name from G
+Minus 
+Select id, name from H;
+
+This will display zero tuples
+
+Select id from G
+Minus 
+Select id from H;
+--------------------------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+												Natural Join with 2 common attributes
+
+Drop table course1;
+Create table course1 (
+Dept varchar(10),
+Courseid varchar(10),
+Coursetitle varchar(30),
+Credits numeric(1)
+);
+Insert into course1 values (‘MATH’, ‘MATH101’, ‘Calculus-1’, 5);
+Insert into course1 values (‘PHY’, ‘PHY101’, ‘Mechanics’, 4);
+Insert into course1 values (‘CHEM’, ‘CHEM101’, ‘Physical Chemistry’, 4);
+Insert into course1 values (‘MECH’, ‘MECH101’, ‘Engineering Drawing’, 4);
+Insert into course1 values (‘EEE’, ‘ENGG101’, ‘Measurement Tech’, 3);
+
+Drop table section;
+Create table section (
+Dept varchar(10),
+Courseid varchar(10),
+Section varchar(1),
+Room numeric(3),
+Block varchar(5),
+DaySlot numeric(1),
+Timeslot numeric(1)
+);
+Insert into section values (‘MATH’, ‘MATH101’, ‘A’, 301, ‘RED’, 1, 3);
+Insert into section values (‘PHY’, ‘PHY101’, ‘A’, 302, ‘RED’, 1, 4);
+Insert into section values (‘CHEM’, ‘CHEM101’, ‘B’, 301, ‘RED’, 2, 3);
+Insert into section values (‘MECH’, ‘MECH101’, ‘B’, 301, ‘RED’, 2, 4);
+Insert into section values (‘MECH’, ‘MECH102’, ‘C’, 303, ‘GRN’, 2, 5);
+
+The following will display 5 x 5 rows
+
+Select * from course1, section;
+
+The following will display 5 x 4 rows
+
+Select course1.dept, course1.courseid, course1.coursetitle, room, block
+from course1 natural join section;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 															INNER JOIN
+
+Inner Join is the simplest and most common type of join. It is also known as simple join. It returns all rows from multiple tables where the join condition is met. 
+
+drop table B;
+
+create table B (
+code char (2),
+name varchar (10),
+email varchar (20),
+phone numeric(10)
+);
+Drop table C;
+
+create table C (
+code char (2),
+name varchar (10),
+email varchar (20),
+phone numeric(10)
+);
+
+Insert into B values (‘P1’, ‘BPB’, ‘bpd@gmail.com’, 1234567890);
+Insert into B values (‘P2’, ‘Khanna’, ‘khanna@gmail.com’, 4567891230);
+Insert into B values (‘P3’, ‘Galgotia’, ‘galgotia@gmail.com’, 7891234560);
+
+Insert into C values (‘A1’, ‘Donovan’, ‘donovan@gmail.com’, 1234567890);
+Insert into C values (‘A2’, ‘Tenanbaum’, ‘tenanbaum@gmail.com’, 4567891230);
+Insert into C values (‘A3’, ‘Acharya’, ‘acharya@gmail.com’, 7891234560);
+
+drop table A;
+
+create table A (
+Bookcode char (10),
+Title varchar (30),
+Pcode char(2),
+Acode char(2)
+);
+
+Insert into A values (‘BOOK101’, ‘Java Programming’, ‘P2’, ‘A3’);
+Insert into A values (‘BOOK102’, ‘Database Concepts’, ‘P3’, ‘A1’);
+Insert into A values (‘BOOK103’, ‘Networking’, ‘P1’, ‘A2’);
+Insert into A values (‘BOOK104’, ‘Fortran Programming’, ‘P4’, ‘A3’);
+Insert into A values (‘BOOK105’, ‘Cobol Programming’, ‘P2’, ‘A5’);
+
+
+
+
+
+
+
+
+Select * from A,B
+where A.Pcode=B.code;
+
+
+
+The same thing can be achieved by
+
+Select *
+From A inner join B
+On A.Pcode=B.code;
+
+Select * 
+from A,C
+where A.Acode=C.code;
+
+The same thing can be achieved by
+
+Select *
+From A inner join C
+On A.Acode=C.code;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							OUTER JOIN
+
+Left Outer Join returns all rows from the left (first) table specified in the ON condition and only those rows from the right (second) table where the join condition is met.
+
+BOOK104, Fortran Programming has publisher P4 which does not exist in the B table, but still this record will be displayed from the A table.
+
+Select *
+From A left  join B
+On A.Pcode=B.code;
+
+BOOK105, COBOL Programming has author A5 which does not exist in the C table, but still this record will be displayed from A table;
+
+Select *
+From A left  join C
+On A.Acode=C.code;
+
+Select *
+From A left outer join C
+On A.Acode=C.code;
+
+Insert a record in the B table which does not have a corresponding record in A table.
+Insert into B values (‘P6’, ‘PHI’, ‘phi@gmail.com’, 1234567890);
+Similarly, insert a record in the C table which does not have a corresponding record in A table.
+Insert into C values (‘A7’, ‘Ramanan’, ‘ramanan@gmail.com’, 1234567890);
+
+The below will display all matching records from both the tables, plus the remaining records from the right (second) table.
+
+Select *
+From A right  join B
+On A.Pcode=B.code;
+
+Select *
+From A right  join C
+On A.Acode=C.code;
+-----------------------------------------------------
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						FULL OUTER JOIN
+The Full Outer Join returns all rows from the left hand table and right hand table. It places NULL where the join condition is not met.
+
+Select *
+From A full join B
+On A.Pcode=B.code;
+
+Select *
+From A full join C
+On A.Acode=C.code;
+
+“Full join” can be written as “full outer join” also.
+
+EQUI  JOIN
+
+Select *
+from A,B
+where A.Pcode=B.code;
+
+SELF JOIN
+
+
+
+CROSS JOIN (Cartesian Product)
+Select * from A,B;
+
+Select *
+from A cross join B;
+
+Select *
+from A cross join B
+where bookcode=’BOOK105’;
+++++++++++++++++++++++++++++++++++++++++++++++++
+					INNER JOIN
+
+Inner Join is the simplest and most common type of join. It is also known as simple join. It returns all rows from multiple tables where the join condition is met. 
+
+drop table B;
+
+create table B (
+code char (2),
+name varchar (10),
+email varchar (20),
+phone numeric(10)
+);
+Drop table C;
+
+create table C (
+code char (2),
+name varchar (10),
+email varchar (20),
+phone numeric(10)
+);
+
+Insert into B values (‘P1’, ‘BPB’, ‘bpd@gmail.com’, 1234567890);
+Insert into B values (‘P2’, ‘Khanna’, ‘khanna@gmail.com’, 4567891230);
+Insert into B values (‘P3’, ‘Galgotia’, ‘galgotia@gmail.com’, 7891234560);
+
+Insert into C values (‘A1’, ‘Donovan’, ‘donovan@gmail.com’, 1234567890);
+Insert into C values (‘A2’, ‘Tenanbaum’, ‘tenanbaum@gmail.com’, 4567891230);
+Insert into C values (‘A3’, ‘Acharya’, ‘acharya@gmail.com’, 7891234560);
+
+drop table A;
+
+create table A (
+Bookcode char (10),
+Title varchar (30),
+Pcode char(2),
+Acode char(2)
+);
+
+Insert into A values (‘BOOK101’, ‘Java Programming’, ‘P2’, ‘A3’);
+Insert into A values (‘BOOK102’, ‘Database Concepts’, ‘P3’, ‘A1’);
+Insert into A values (‘BOOK103’, ‘Networking’, ‘P1’, ‘A2’);
+Insert into A values (‘BOOK104’, ‘Fortran Programming’, ‘P4’, ‘A3’);
+Insert into A values (‘BOOK105’, ‘Cobol Programming’, ‘P2’, ‘A5’);
+
+
+
+
+
+
+
+
+Select * from A,B
+where A.Pcode=B.code;
+
+
+
+The same thing can be achieved by
+
+Select *
+From A inner join B
+On A.Pcode=B.code;
+
+Select * 
+from A,C
+where A.Acode=C.code;
+
+The same thing can be achieved by
+
+Select *
+From A inner join C
+On A.Acode=C.code;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				OUTER JOIN
+
+Left Outer Join returns all rows from the left (first) table specified in the ON condition and only those rows from the right (second) table where the join condition is met.
+
+BOOK104, Fortran Programming has publisher P4 which does not exist in the B table, but still this record will be displayed from the A table.
+
+Select *
+From A left  join B
+On A.Pcode=B.code;
+
+BOOK105, COBOL Programming has author A5 which does not exist in the C table, but still this record will be displayed from A table;
+
+Select *
+From A left  join C
+On A.Acode=C.code;
+
+Select *
+From A left outer join C
+On A.Acode=C.code;
+
+Insert a record in the B table which does not have a corresponding record in A table.
+Insert into B values (‘P6’, ‘PHI’, ‘phi@gmail.com’, 1234567890);
+Similarly, insert a record in the C table which does not have a corresponding record in A table.
+Insert into C values (‘A7’, ‘Ramanan’, ‘ramanan@gmail.com’, 1234567890);
+
+The below will display all matching records from both the tables, plus the remaining records from the right (second) table.
+
+Select *
+From A right  join B
+On A.Pcode=B.code;
+
+Select *
+From A right  join C
+On A.Acode=C.code;
+-----------------------------------------------------
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					FULL OUTER JOIN
+The Full Outer Join returns all rows from the left hand table and right hand table. It places NULL where the join condition is not met.
+
+Select *
+From A full join B
+On A.Pcode=B.code;
+
+Select *
+From A full join C
+On A.Acode=C.code;
+
+“Full join” can be written as “full outer join” also.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														OUTER JOIN QUESTIONS
+
+Note: For all the questions, if there is a reference to tables, these tables A and B with the given data will be referenced.
+
++++++++++++++++++++++++++++++++++++++
+Set linesize 160;
+Set pagesize 25;
+Clear screen;
++++++++++++++++++++++
+/* B is Publisher Table */
+
+create table B (
+     pcode char (2),
+     pname varchar (10),
+     pemail varchar (20),
+     pphone numeric(10),
+     pbooks numeric(5)
+     );
+
+Insert into B values (‘P1’, ‘BPB’, ‘bpd@gmail.com’, 1234567890, 1200);
+Insert into B values (‘P2’, ‘Khanna’, ‘khanna@gmail.com’, 4567891230, 3000);
+Insert into B values (‘P3’, ‘Galgotia’, ‘galgotia@gmail.com’, 7891234560, 4000);
+Insert into B values (‘P4’, ‘PHI’, ‘phi@gmail.com’, 7891234560, 4500);
+Insert into B values (‘P5’, ‘Pearson’, ‘pearson@gmail.com’, 7891234560, 5100);
+Insert into B values (‘P5’, ‘Saraswati’, ‘saraswati@gmail.com’, 7891234560, 5500);
+Insert into b values (‘P6’, ‘Khajana’, ‘khajana@gmail.com’,  4567891230, 3500);
+Insert into b values (‘P7’, ‘Kha%’, ‘kha%@gmail.com’,  4567891230, 3500);
+
+
++++++++++++++++++++++++++++++
+
+/* A is book table */
+
+drop table A;
+
+create table A (
+     Bookcode char (10),
+     Title varchar (30),
+     Pcode char(2),
+     Acode char(2)
+     );
+
+Insert into A values (‘BOOK101’, ‘Java Programming’, ‘P2’, ‘A3’);
+Insert into A values (‘BOOK102’, ‘Database Concepts’, ‘P3’, ‘A1’);
+Insert into A values (‘BOOK103’, ‘Networking’, ‘P1’, ‘A2’);
+Insert into A values (‘BOOK104’, ‘Cloud Computing’, ‘P8’, ‘A2’);
+Insert into A values (‘BOOK105’, ‘Cloud Computing’, ‘P2’, ‘A9’);
+
+++++++++++++++++++++++++++++++++++++++++++
+
+Q1: Write a SQL command to display the bookcode, title, publisher name, publisher email for all books where the publisher details are available. I also want to see all those books for which the publisher details are NOT available.
+
+Select bookcode, title, pname, pemail
+ from a left outer join b
+ON a.pcode=b.pcode;
+
+Select bookcode, title, pname, pemail
+From b right outer join a
+ON a.pcode=b.pcode;
+
+
+Q2: Write a SQL command to display the bookcode, title, publisher name, publisher email for all books where the publisher details are available.
+
+I also want to see all those publishers whose books are NOT appearing in the book table.
+
+Select bookcode,title, pname, pemail
+ from a,b
+where a.pcode=b.pcode;
+
+Select bookcode,title, pname, pemail
+ from a right outer join b
+ON a.pcode=b.pcode;
+
+
+
+Q3: 
+
+Select * from b
+Where pname like ‘Kha___’;
+
+Select * from b
+Where pname like ‘Kha?%’ escape ‘?’;
+
+Select * from b
+Where pname like ‘Kha%’ ;
+
+Q4:
+
+If we had applied primary key constraint on the publisher code in table B, which tuple from the data will be rejected and why?
+
+Q5: Recreate the tables B and A so that we enter only those books in table A whose publishers are existing. What kind of constraints will be applied on which table? Write the revised syntax of table creation.
+
+							OUTER JOIN QUESTIONS END
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++             
+
+
+
+
+						EQUI  JOIN
+
+Select *
+from A,B
+where A.Pcode=B.code;
+
+SELF JOIN
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						CROSS JOIN (Cartesian Product)
+Select * from A,B;
+
+Select *
+from A cross join B;
+
+Select *
+from A cross join B
+where bookcode=’BOOK105’;
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+					VIEW CREATION
+Simple query
+Select * from A,B where a.Pcode=B.pcode;
+
+Create view book_pub as
+Select bookcode, title, b.pcode, B.pname, c.acode, C.aname
+From a,b,c
+Where a.pcode=b.pcode and a.acode=c.acode and a.bookcode <> ‘BOOK101’;
+++++++++++++++++++++++++++++++
+VIEW does not store the relation. It only stores the definition. When you use the view, it executes the inbuilt query and fetches fresh results;
+Insert some records in A and modify a record of B
+Insert into A values (‘BOOK104’, ‘Cloud Computing’, ‘P1’, ‘A2’);
+Update B
+Set pname=’BPB Ltd’ 
+Where pname=’BPB’;
+
+Now display the tuples of view
+
+Select * from book_pub;
+
+
+
+Select course_id
+From section
+Where semester=’Spring’ and year=2010;
+
+Select distinct course_id
+From section
+Where semester = ‘ Fall’ and year =2009;
+
+SUB QUERY
+Select distinct course_id
+From section
+Where semester = ‘ Fall’ and year =2009 and 
+	Course_id in (Select course_id
+From section
+Where semester=’Spring’ and year=2010);
+
+Insert into B values (‘P4’, ‘Pearson’, ‘pearson@gmail.com’, 1234567890);
+Insert into B values (‘P5’, ‘Rameshbd’, ‘rameshbd@gmail.com’, 1234567890);
+
+Insert into A values (‘BOOK104’, ‘Networking’, ‘P6’, ‘A2’);
+Insert into A values (‘BOOK105’, ‘Networking’, ‘P7’, ‘A5’);
+
+
+BOOK, PUBLISHER, AUTHOR Example
+Select distinct code
+From b
+Where code in (select pcode from a);
+
+
+Select distinct code
+From b
+Where code not in (select pcode from a);
+
+Select distinct pcode
+From a
+Where pcode in (select code from b);
+
+Select distinct pcode
+From a
+Where pcode not in (select code from b);
+
+@@@@@@@@@@@@@@@@@@@
+
+Select count(distinct ID)
+From takes
+Where (course_id, sec_id, semester, year) in 
+(select course_id, sec_id, semester, year
+From teaches
+Where teaches.ID=10101);
+
+@@@@@@@@@@@@@@@@
+
+Select distinct T.name
+From instructor T, instructor S
+Where T.salary > S.salary and S.dept_name=’Biology’;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Delete from r;
+Alter table r add A D;
+Alter table r drop A;
+Select distinct dept_name from instructor;
+Select ALL dept_name from instructor;
+Natural join (match all attributes which are common)
+Cartesian Product (m x n tuples)
+Rename operation
+Select salary as old_sal , salary*1.1 as mod_sal from instructor;
+Correlation name, table alias, correlation variable, tuple variable
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							String operations
+% matches any substring
+_ matches any character
+
+Order by
+asc, desc
+between, not between
+
+the below is not supported
+select * from a
+where (bookcode, pcode)=(‘BOOK103’, ‘P1’);
+
+select * from a
+where pcode except ‘P1’;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			/* table must be empty to add a mandatory not null column */
+
+Drop table dummy;
+Create table dummy (
+Empid int,
+Empid2 smallint,
+Empid3 integer
+);
+
+Insert into dummy values (1234567, 1234, 1234567);
+/* table must be empty to add a mandatory not null column */
+Alter table dummy
+Add name varchar(10) not null;
+
+Select ‘1234’ as FOO;
+Select ‘1234’ from dummy;
+Insert into dummy values (3456789, 3456, 1234567);
+
+
+ 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+				String operations
+% matches any substring
+_ matches any character
+
+Select * from a where bookcode like ‘BOOK10%’ ;
+Select * from a where bookcode lke ‘BOOK10-’ ;
+
+
+Select * from a where bookcode like ‘BOOK10\_’ escape ‘\’ ;
+
+
+Select * from a where bookcode like ‘BOOK10\*’ ;
+Select * from a where bookcode like ‘BOOK10\?’ ;
+
+
+Select * from a where bookcode like ‘BOOK\%04’ escape ‘\’;
+update a set bookcode='BOOK114' where bookcode='BOOK104';
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							RELATIONAL ALGEBRA
+
+drop table A2;
+
+create table A2 (
+Bookcode char (10),
+Title varchar (30),
+Pcode char(2),
+Acode char(2)
+);
+
+Insert into A2 values (‘BOOK101’, ‘Java Programming’, ‘P2’, ‘A3’);
+Insert into A2 values (‘BOOK104’, ‘Database Concepts’, ‘P3’, ‘A1’);
+Insert into A2 values (‘BOOK105’, ‘Networking’, ‘P1’, ‘A2’);
+
+Select * from a
+minus
+Select * from a2;
+
+Project operator is like the select command of SQL
+Sigma operator is like where clause of SQL
+
+(Project)bookcode,title,pcode,acode (a) 
+union
+(Project)bookcode, title, pcode, acode (a2)
+
+(Project)bookcode,title,pcode,acode (a) 
+minus
+(Project)bookcode, title, pcode, acode (a2)
+
+(Cartesian Priduct) (a ,b)
+
+
+Insert into a values (‘BOOK106’, ‘Networking’, ‘P4’, ‘A2’);
+Insert into a values (‘BOOK107’, ‘Networking’, ‘P1’, ‘A5’);
+
+
+Select * from a,b
+Where a.pcode=b.pcode;
+
+Sigmaa.pcode=b.pcode((Cartesian Product) (a,b))
+
+Sigma is like where clause of SQL which specifies conditions
+Project is like select clause of SQL
+Union is same
+Minus is same
+Rho is like rename
+Cartesian Product – no special instruction in SQL, but achieved by specifying “no condition” in the where clause
+ 
+Rho R ((Project)bookcode,title,pcode,acode (a) )
+union
+Rho S   ((Project)bookcode, title, pcode, acode (a2))
+RhoQ(R-S)
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						RELATIONAL ALGEBRA
+
+Pi staffid, staffname, staffmobile (Sigma staffid<=300 (Staff))
+Pi staffid, staffname, room (Sigma Room<=12 (staff x boss))
+Select * from staff, boss;
+
+
+
+
+							Natural Join
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							Cartesion Product
+
+(Cartesion Product) (A,B)
+
+Natural Join definition (not a basic operator of relational algebra)
+(Cartesion Product)a.pcode=b.pcode (A,B)
+
+
+
+
+
+
+
+
+
+(Sigma)bookcode=’BOOK103’ (A);
+Write a relational algebra expression where the publisher 
+
+
+
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(((((((((((((((((((((((((((((((((((((
+((((((((((((((((((((((((((((((((((((
+
+
+
+
+			RATION TABLE
+
+drop table ration;
+create table ration (item varchar (20),
+                     quantity numeric(5,2),
+                     brand varchar (10));
++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			UNIVERSITY TABLE
+drop table university;
+create table university (name varchar(10),
+			locality varchar2(20),
+			city varchar(15),
+			pin number(6), 
+			primary key (name)
+                        );
+insert into university values ('IITD', 'Hauz Khas', 'Delhi', 110016);
+insert into university values ('IITK', 'Kalyanpur', 'Kanpur', 208016);
+insert into university values ('IITM', 'IIT Road', 'Chennai', 600036);
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			EMP TABLE
+
+create table emp (name varchar (10),
+                    mobile numeric(10));
+
+insert into emp values ('Lalit', 9549408857);
+insert into emp values (Anil, 9549408857);
+insert into emp values ('AnilKumarJain', 9549408857);
+
+Delete from emp;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			EMP TABLE
+
+drop table emp;
+
+create table emp (empid numeric(3) not null,
+		  name varchar (10) not null,
+                    mobile numeric(10) not null,
+                    city varchar(20) null);
+
+insert into emp values (101, 'Lalit', 9549408857, 'Kota');
+insert into emp values (107, 'Anil', 9549401234, NULL);
+insert into emp values (109, 'Sunil', 2003004001, NULL);
+
+select * from emp;
+
+select empid, name from emp;
+select empid, name from emp where city='Kota';
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			ADDR TABLE
+
+drop table addr;
+
+create table addr (empid numeric(3),
+                   house varchar (20),
+		   loc varchar (20),
+                   City varchar(20));
+
+insert into addr values (101, '52/99', 'Pratap Nagar', 'Jaipur');
+insert into addr values (107, '5-A-11', 'Talwandi', 'Kota');
+insert into addr values (109, 'G01, Sunflower', 'Manglam Aananda', 'Jaipur');
+insert into addr values (112, 'B-79', 'Vivek Vikar', 'Delhi');
+
+select * from addr;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			-------- table with primary key ---------------
+CREATE TABLE cust    
+( id number(10) NOT NULL,    
+  name varchar2(50) NOT NULL,    
+  city varchar2(50),  
+CONSTRAINT customers_pk PRIMARY KEY (id)      
+);    
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			EQUI JOIN
+
+
+---- it will produce, 3x4 rows. For each record of emp, all the 4 records of addr------
+select emp.empid, mobile, house from emp, addr;
+
+
+---- with joining condition ----
+select emp.empid, mobile, house from emp, addr where empid=101;
+
+select emp.empid, mobile, house from emp, addr where emp.empid=addr.empid;
+
+----- with more conditions --------
+
+select emp.empid, mobile, house from emp, addr where emp.empid=addr.empid and addr.city='Jaipur';
+
+select * from emp2 order by name desc, mobile;
+
+select * from emp, addr;
+select addr.empid, name, mobile, house, loc, addr.city from emp, addr where emp.empid=addr.empid;
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+			DROP / DELETE / CREATE A TABLE FROM ANOTHER
+
+create table emp2 as
+select * from emp;
+
+
+Delete from emp2 where city='Kota';
+
+delete from emp2;
+
+drop table emp2;
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			UPDATE
+update emp2 set name='Lalit'where name='Anil'; 
+
+++++++++++++++++++++++++++++++++++++++++++++
+
+			ALTER TABLE 
+
+alter table emp3
+modify name varchar(30);
+
+alter table emp3
+modify (name varchar(35), city varchar(30));
+
+alter table emp3
+drop column city;
+
+alter table emp3
+rename to emp4;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+-----------create a view ------------------
+drop view emp_name_addr;
+
+create view emp_name_addr as
+select emp.empid, name, mobile, house, loc, addr.city
+from emp, addr
+where emp.empid=addr.empid;
+
+-------------------------------------------
+update emp set name='AnilSharma', city='London' where empid=101; 
+
+create table emp2 as
+select * from emp; 
+
+truncate table emp2;  
+
+
+
+
+
+
+
+
+
+
+			RATION TABLE
+
+drop table ration;
+create table ration (item varchar (20),
+                     quantity numeric(5,2),
+                     brand varchar (10));
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			SIMPLE JOIN
+
+select empid, emp.name, mobile, org, university.name, locality, city, pin
+from emp, university
+where emp.org=university.name;
+
+			
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			RENAME
+alter table emp
+rename column state to Rajya;
+
+alter table emp
+rename emp to emp2;
+++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+			
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+			ENTITY RELATIONSHIP DIAGRAM - BASICS
+
+BOOK101 is written by A3
+A3 is the author of BOOK101
+
+BOOK102, Database Concepts, P2, A1 	P1, BPB, bpb@gmail.com, 1234567890
+BOOK102, Database Concepts, P2, A1 	P2, Khanna, Khanna@gmail.com, 1234567890
+BOOK102, Database Concepts, P2, A1 	P3, Galgotia, galgotia@gmail.com, 1234567890
+BOOK102, Database Concepts, P2, A1	P4, PHI, phi@gmail.com, 1234567890
+BOOK102, Database Concepts, P2, A1	P5, Pearson, pearson@gmail.com, 1234567890
+
+One student can take advice from many instructors
+Many students can take advice from one instructor
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						SELF JOIN
+
+Write the title of the course which is pre requisite for MATH103
+
+++++++++++++++++++++++++++++++++++++++++++++++
+						VIEW CREATION
+
+create view emp_name_addr as
+select emp.empid, name, mobile, house, loc, addr.city
+from emp, addr
+where emp.empid=addr.empid;
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+						VIEW CREATION
+Drop view staff_mgr2;
+Create view staff_mgr2 as
+(select staffid, staffname, staffemail, staffmobile, managername
+From staff, boss
+Where staff.managerid=boss.managerid
+);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							ALTER COMMANDS
+
+drop table emp;
+create table emp (empid numeric(3) not null,
+		  name varchar (10) not null,
+                    mobile numeric(10) not null,
+                    city varchar(20) null);
+insert into emp values (101, 'Lalit', 9549408857, 'Kota');
+insert into emp values (107, 'Anil', 9549401234, NULL);
+insert into emp values (109, 'SunilJain', 9549403456, '');
+insert into emp values (110, 'SunitaJain', 9549403456, '');
+
+alter table emp
+add (state varchar (10),
+     age number(3));
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+alter table system.emp
+drop column mobile;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+						NEW TOPICS
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+							String Operations
+
+drop table emp;
+create table emp (empid numeric(3) not null,
+		  name varchar (10) not null,
+                    mobile numeric(10) not null,
+                    city varchar(20) null);
+insert into emp values (101, 'Lalit', 9549408857, 'Kota');
+insert into emp values (102, 'Rajesh', 9549408857, 'Kotayam');
+insert into emp values (107, 'Anil', 9549401234, NULL);
+insert into emp values (109, 'SunilJain', 9549403456, '');
+insert into emp values (110, 'SunitaJain', 9549403456, '');
+
+select * from emp where name like 'Suni%';
+
+select * from emp where name not like 'Suni%';
+select * from emp where city like 'Kot_';
+
+(((((((((((((((((((((((((((((((
+drop view book_pub_auth;
+create view book_pub_auth as
+(select distinct bookcode, title, pname, aname from book, pub, auth 
+where book.pcode=pub.pcode and book.acode=auth.acode and book.pcode IN ('BOOK101' , 'BOOK102'));
+
+insert into book values ('BOOK109', 'IOT', 'P3', 'A3');
+
+insert into book values ('BOOK110', 'cloud computing', 'P1', 'A1');
+delete from book 
+where bookcode='BOOK102';

@@ -1,0 +1,257 @@
+((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((
+														SET OPERATIONS
+P= {1,2,3,5,6}
+Q= {3,4,7}
+P Union Q = {1 2 3 4 5 6 7}
+P Union ALL Q = {1 2 3 3 4 5 6 7}
+P Intersect Q = {3)
+P Minus Q = {1 2 5 6}
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+									Create 2 tables having same number and type of attributes.
+
+Drop table A;
+Create table A (
+		ID numeric(3),
+		Name char (20),
+		Dept char(10)
+		);
+Insert into A values (101, ‘Lalit’, ‘MATH’);
+Insert into A values (102, ‘Anil’, ‘PHY’);
+Insert into A values (103, ‘Pratap’, ‘ENGL’);
+
+Drop table B;
+Create table B (
+		ID numeric(3),
+		Name char (20),
+		Dept char(10)
+		);
+
+Insert into B values (201, ‘Hari’, ‘MATH’);
+Insert into B values (202, ‘John’, ‘PHY’);
+Insert into B values (203, ‘Paramjeet’, ‘ENGL’);
+Insert into B values (103, ‘Pratap’, ‘ENGL ’);
+Insert into B values (102, ‘Anil’, ‘PHY’);
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														UNION & UNION ALL
+Select * from a
+Union 
+Select * from b;
+
+Select * from a
+Union all
+Select * from b;
+
+Select name, dept from a
+Union
+Select name, dept from b;
+
+						-- This will not work
+Select name from a		
+Union
+Select name, dept from b;
+
+
+Select * from A where dept=’ENGL’
+Union
+Select * from B where dept=’PHY’;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Now insert another Pratap
+
+Insert into A values (104, ‘Pratap’, ‘ENGL’);
+
+Below command will show both the tuples of Pratap, as ID makes them unique
+
+Select * from A where dept=’ENGL’
+Union
+Select * from B where dept=’PHY’;
+
+Below command will display only 1 tuple of Pratap, as name and dept are same in both the tuples and hence any duplicate will be removed.
+
+Select name, dept from A where dept=’ENGL’
+Union
+Select name, dept from B where dept=’PHY’;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+The following command will not drop the duplicate records which have the same Pratap, ENGL values
+
+Select name, dept from A 
+Union all
+Select name, dept from B ;
+
+The following command will drop the duplicate records which have the same Pratap, ENGL values
+
+Select name, dept from A 
+Union
+Select name, dept from B ;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Can you use UNION operator for the result set of these 2 relations?
+
+Drop table C;
+Create table C (
+		ID numeric(3),
+		Name varchar (20)		
+		);
+Drop table D;
+Create table D (
+		ID numeric(3),
+		Dept varchar(20)
+		);
+Insert into C values (101, ‘Lalit’);
+Insert into C values (102, ‘Anil’);
+Insert into C values (103, ‘Pratap’);
+Insert into C values (104, ‘Pratap’);
+
+Insert into D values (201,  ‘MATH’);
+Insert into D values (202, ‘PHY’);
+Insert into D values (203, ‘ENGL’);
+
+Select * from C
+Union
+Select * from D;
+
+Select * from C
+Union all
+Select * from D;
+
+Select name from C
+Union
+Select dept from D;
+
+Select name from C
+Union all
+Select dept from D;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Can you use UNION operator when the source relations have different number of attributes?
+
+Drop table E;
+Create table E (
+		ID numeric(3),
+		Name varchar (20),
+		Dept varchar(10), 
+		Salary numeric (8,2)
+		);
+Drop table F;
+Create table F (
+		ID numeric(3),
+		Name varchar (20),
+		Age numeric(3)
+		);
+Insert into E values (101, ‘Lalit’, ‘MATH’, 7000);
+Insert into E values (102, ‘Anil’, ‘PHY’, 8000);
+Insert into E values (103, ‘Pratap’, ‘ENGL’, 9000);
+Insert into E values (104, ‘Pratap’, ‘ENGL’, 10000);
+
+
+Insert into F values (201, ‘Hari’, 41);
+Insert into F values (202, ‘John’, 42);
+Insert into F values (203, ‘Paramjeet’, 43);
+Select * from e
+Union all
+Select * from f;
+
+
+Select ID, name from E
+Union all
+Select ID, name from F;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															INTERSECT
+
+Drop table G;
+Create table G (
+		ID numeric(3),
+		Name varchar (20),
+		Dept varchar(10), 
+		Salary numeric (8,2)
+		);
+Drop table H;
+Create table H (
+		ID numeric(3),
+		Name varchar (20),
+		Age numeric(3)
+		);
+Insert into G values (101, ‘Lalit’, ‘MATH’, 7000);
+Insert into G values (102, ‘Anil’, ‘PHY’, 8000);
+Insert into G values (103, ‘Pratap’, ‘ENGL’, 9000);
+Insert into G values (104, ‘Guru’, ‘ENGL’, 10000);
+
+Insert into H values (101, ‘Lalit’, 51);
+Insert into H values (102, ‘Anil’, 52);
+Insert into H values (103, ‘Pratap’, 53);
+Insert into H values (104, ‘Harish’,54);
+
+The below command will give error as the numbers of attributes in the result set are not same
+
+Select id, name  from G
+intersect
+Select id, name from H;
+
+This command will be accepted. Only records where ID and name match will be displayed
+
+Select ID, name from G
+Intersect
+Select ID, name from H;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															MINUS
+Select ID, name from h
+minus
+Select ID, name from g;
+
+
+Select id, name from h
+Minus
+Select id, name from g;
+
+
+
+
+Now all the 4 ID numbers will be displayed as you are not selecting the name column
+
+Select ID from G
+Intersect
+Select ID from H;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															MINUS
+
+The first select will select 4 tuples. Out of these, 3 appear in the second select statement and those 3 will be removed from the result set.
+
+Select id, name from G
+Minus 
+Select id, name from H;
+
+This will display zero tuples
+
+Select id from G
+Minus 
+Select id from H;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															UNION
+select distinct course_id
+from section
+where semester = 'Fall' and year= 2009
+
+UNION
+
+select distinct course_id
+from section
+where semester = 'Spring' and year= 2010;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															INTERSECT
+select distinct course_id
+from section
+where semester = 'Fall' and year= 2009
+INTERSECT
+select distinct course_id
+from section
+where semester = 'Spring' and year= 2010;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+															MINUS
+select distinct course_id
+from section
+where semester = 'Fall' and year= 2009
+MINUS
+select distinct course_id
+from section
+where semester = 'Spring' and year= 2010;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

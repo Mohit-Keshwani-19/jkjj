@@ -1,0 +1,55 @@
+Set linesize 160;
+Set pagesize 25;
+Clear screen;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														Pattern Matching
+drop table book;
+drop table pub;
+
+create table pub (
+pcode char (2),
+pname varchar (10),
+pemail varchar (20),
+pphone numeric(10),
+pbooks numeric(5)
+);
+
+Insert into pub values (‘P1’, ‘BPB’, ‘bpd@gmail.com’, 1234567890, 1200);
+Insert into pub values (‘P2’, ‘Khanna’, ‘khanna@gmail.com’, 4567891230, 3000);
+Insert into pub values (‘P3’, ‘Galgotia’, ‘galgotia@gmail.com’, 7891234560, 4000);
+Insert into pub values (‘P4’, ‘Gal%’, ‘galgotia@gmail.com’, 7891234560, 4000);
+Insert into pub values (‘P5’, ‘PHI’, ‘phi@gmail.com’, 7891234560, 4500);
+Insert into pub values (‘P6’, ‘Pearson’, ‘pearson@gmail.com’, 7891234560, 5100);
+Insert into pub values (‘P7’, ‘Saraswati’, ‘saraswati@gmail.com’, 7891234560, 5500);
+Insert into pub values (‘P8’, ‘Sarawagi’, ‘sarawagi@gmail.com’, 7891234560, 5500);
+
+							Query to display all publishers whose name is starting with 'Sara'
+select * from pub where pname like 'Sara%';
+
+							Display the records where pname has Sara and exactly 4 character after that.
+select * from pub where pname like 'Sara____';
+
+							Display the record where pname is starting with "Gal"
+select * from pub where pname like 'Gal%';
+							Display the records where pname starts with "Gal%"
+select * from pub where pname like 'Gal\%' escape '\';
+
+							Change the escape character to some other character
+
+select * from pub where pname like 'Gal&%' escape '&';
+
+
+
+
+
+Select * from b where pcode IN (select  pcode from b where pbooks >= 4000);
+
+Select distinct * from b;
+Select distinct pcode from b;
+Select ALL pcode from b;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+
+

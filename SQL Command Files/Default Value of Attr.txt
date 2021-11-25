@@ -1,0 +1,21 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+												DEFAULT VALUE OF ATTRIBUTE
+
+drop table emp4;																	
+create table emp4 (
+			empid numeric(3),
+			empname varchar(20) not null,
+			dept_name varchar(20),
+			salary numeric (6) default 50000,
+			primary key (empid)
+		   );
+
+If you do not specify the attributes, then you have to give all values.
+
+If you want to take default value for the attribute, then specify the names of other attributes and their values.
+
+
+insert into emp4 values (101, 'Suresh', 'Chemistry', 60000);
+insert into emp4 values (102, 'Ganesh', 'Physics', null);
+insert into emp4(empid, empname, dept_name) values (103, 'Ganesh', 'Physics');
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,0 +1,32 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														-- Bind Variables
+--Can be declared anywhere, not only within the declare section
+-- require the colon ':' before the variable name every time u USE it.
+-- Colon not required in the variable definition statement
+
+Example1:
+
+set serveroutput on;
+variable emp_name1 varchar2(10);
+exec :emp_name1 := 'Lalit';
+print :emp_name1;
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Example 2:
+
+set serveroutput on;
+variable emp_name1 varchar2(10);
+variable emp_name2 varchar2(10);
+
+exec :emp_name1 := 'Lalit';
+exec :emp_name2 := &enter_name2;
+print :emp_name1;
+print :emp_name2;
+begin
+	dbms_output.put_line(:emp_name1);
+	:emp_name1 := 'Suresh';					-- The value of emp_name1 has been modified inside the PL/SQL block
+	dbms_output.put_line(:emp_name1);
+	dbms_output.put_line(:emp_name2);
+end;
+/
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

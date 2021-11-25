@@ -1,0 +1,60 @@
+drop table student2;
+create table student2 (
+roll_no number(5),
+sudent_name varchar2(20),
+city varchar2(20)
+);
+
+Insert into student2 values (1, 'Anil', 'Delhi');
+Insert into student2 values (2, 'Sunil', 'GZB');
+Insert into student2 values (3, 'Ajay', 'Delhi');
+Insert into student2 values (4, 'Vijay', 'Calcutta');
+Insert into student2 values (5, 'Manoj', 'Bangalore');
+Insert into student2 values (6, 'Geeta', 'Noida');
+Insert into student2 values (7, 'Sita', 'Noida');
+Insert into student2 values (8, 'Reeta', 'Faridabad');
+Insert into student2 values (9, 'Arvind', 'NCR');
+Insert into student2 values (10, 'Kumar', 'New Delhi');
+
+drop table student_marks;
+create table student_marks (
+roll_no number (5),
+science number (3),
+math number (3),
+eng number(3)
+);
+
+insert into student_marks values (1, 34,78,54);
+insert into student_marks values (2, 78,43,87);
+insert into student_marks values (3, 45,32,78);
+insert into student_marks values (4, 36,78,32);
+insert into student_marks values (5, 12,22,67);
+insert into student_marks values (6, 21,65,43);
+insert into student_marks values (7, 34,78,54);
+insert into student_marks values (8, 89,78,54);
+insert into student_marks values (9, 76,78,54);
+insert into student_marks values (10, 22,56,54);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+select * from student_marks where roll_no in (select roll_no from student2 where city='Noida');
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+drop table student_bak;
+create table student_bak (
+			roll_no number(5),
+			science number(3),
+			math number (3),
+			eng number(3),
+			total number(3)
+			);
+insert into student_bak (roll_no, science, math, eng)
+select roll_no, science, math, eng from student_marks;
+
+insert into student_bak (roll_no, science, math, eng, total)
+select roll_no, science, math, eng, science+math+eng from student_marks;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+delete from student_bak where roll_no in (select roll_no from student_marks where (science+math+eng) <= 150);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+select empname from emp4 where salary = (select max(salary) from emp4);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

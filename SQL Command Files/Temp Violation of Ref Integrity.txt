@@ -1,0 +1,28 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+										TEMPORARY VIOLATION of REFERENTIAL INTEGRITY
+
+drop table family;
+
+create table family (
+		member varchar(20),
+		spouse varchar(20),
+		primary key (member),
+		foreign key (spouse) references family
+		);
+
+John 	Savitri
+Mohini	Ganesh
+
+
+insert into family values ('John', 'Savitri');
+insert into family values ('Savitri', 'John');
+
+insert into family values ('John', null);
+insert into family values ('Savitri', null);
+
+update family
+set spouse='Savitri' where member='John';
+
+update family
+set spouse='John' where member='Savitri';
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,0 +1,91 @@
+cl scr;
+set linesize 160;
+set pagesize 40;
+set serveroutput on;
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+select sysdate from dual;
+select atttribute names from table names;
+lect ascii('1') Big_A from dual;
+select chr(97)from dual;
+select chr(98)from dual;
+select concat ('Hello', 'Ram') Greetings from dual;
+select initcap ('lalit') name from dual;
+select initcap ('lAliT') name from dual;    /* if the first character is an alphabet, convert it to capital and all others to lowercase */
+select initcap ('5lAliT') name from dual;
+select initcap ('5lA7liT') name from dual;
+select lpad ('Lalit',10) name10char from dual;
+select lpad ('Lalit',10) name from dual;
+select lpad ('Lalit',10, '&') name from dual;
+
+select rpad ('Lalit',10) name from dual;
+select rpad ('Lalit',10, '$') name from dual;
+
+select ltrim('MrLalit', 'Mr') name from dual;
+select rtrim('LalitSir', 'Sir') name from dual;
+select length ('Poornima University') length from dual;
+select lower ('LaLIT') fname from dual;
+select upper ('lAlit') fname from dual;
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+drop table emp;
+create table emp (
+name varchar(30)
+);
+
+insert into emp values ('Mrs Kiran Jain');
+insert into emp values ('Mrs. Kiran Jain');
+insert into emp values ('MRS Santosh Jain');
+insert into emp values ('MRS.Santosh Jain');
+insert into emp values ('Ms Sarita Gupta');
+insert into emp values ('MS Sarita Gupta');
+insert into emp values ('Mr Lalit Kumar Jain');
+insert into emp values ('MR Lalit Kumar Jain');
+insert into emp values ('MR. Lalit Kumar Jain');
+insert into emp values ('Dr. Sudheer Kumar');
+insert into emp values ('DR. Sudheer Kumar');
+insert into emp values ('Er. jugal kishore');
+insert into emp values ('ER.jugal kishore');
+insert into emp values ('CA. rAm naRAYan'); 
+insert into emp values ('Prof.   jugal kishore');
+insert into emp values ('Prof..     jugal kishore');
+
+
+Write a set of SQL instructions using inbuilt functions to
+a) remove the titles like Mrs, Mr, Dr, Er, CA etc
+b) remove any leading spaces
+c) Capitalize the first alphabet of first, middle and last name
+d) Display the names right aligned filling with spaces on the left side.
+e) Display the names right aligned filling with dot (.)  on the left side.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+declare
+	cursor c2 is select name from emp;
+	empname1 emp.name%type;
+	empname2 emp.name%type;
+	
+begin
+	open c2;
+	loop
+		fetch c2 into empname1;
+		exit when c2%notfound;
+		empname1 := ltrim(empname1, 'Mrs');
+		empname1 := ltrim(empname1, 'MRS');
+		empname1 := ltrim(empname1, 'Ms');
+		empname1 := ltrim(empname1, 'MS');
+		empname1 := ltrim(empname1, 'Mr');
+		empname1 := ltrim(empname1, 'MR');
+		empname1 := ltrim(empname1, 'Dr');
+		empname1 := ltrim(empname1, 'DR');
+		empname1 := ltrim(empname1, 'Er');
+		empname1 := ltrim(empname1, 'ER');
+		empname1 := ltrim(empname1, 'Ca');
+		empname1 := ltrim(empname1, 'CA');
+		empname1 := ltrim(empname1, 'Prof');
+		empname1 := ltrim(empname1, 'PROF');
+		empname1 := ltrim(empname1, '.');
+		empname1 := Initcap(empname1);
+		dbms_output.put_line(empname1);
+	end loop;
+	close c2;
+end;
+/

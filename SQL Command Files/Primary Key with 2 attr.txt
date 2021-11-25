@@ -1,0 +1,33 @@
+Table with 2 attributes in primary key
+
++++++++++++++++++++++++++++++++++
+create table addr (
+	acity varchar (20),
+	astate varchar(20),
+	ahouse varchar(10),
+	astreet varchar(20),
+	aloc varchar(20),
+	apin numeric(6),
+	primary key (acity, astate)
+	);
+
+Create table emp (
+	ecode numeric(3),
+	ename varchar(20),
+	ecity varchar(20),
+	estate varchar(20),
+	foreign key (ecity, estate) references addr
+	);
+
+insert into addr values ('Kota', 'Rajasthan', '1-K-19', Null, 'Vigyan Nagar', 324005);
+insert into addr values ('Kota', 'Tamil Nadu', '301-A', 'Rajaji Street', ' Anna Salai', 600040);
+insert into addr values ('Ramgarh', 'Rajasthan', '101', 'Gandhi Marg', 'Subhash Nagar', 333031);
+insert into addr values ('Ramgarh', 'Uttar Pradesh', 'A501', 'Ambe Marg', 'Gomti Nagar', 400100);
+insert into addr values ('MugalSarai', 'Telangana', 'K-101', 'Nizam Road', 'Ramoji City', 500100);
+insert into addr values ('MugalSarai', 'Bihar', '1210-A', 'Rajendra Road', 'Gandhi Nagar', 600200);
+
+insert into emp values (101, 'Lalit', 'Kota', 'Rajasthan');
+insert into emp values (102, 'John', 'Kota', 'Tamil Nadu');
+insert into emp values (103, 'Suresh', 'Kota', 'rajasthan');
+insert into emp values (104, 'Farhan', 'Mugal Sarai', 'Telangana');
+insert into emp values (105, 'Javed', 'MugalSarai', 'Telangana'); 

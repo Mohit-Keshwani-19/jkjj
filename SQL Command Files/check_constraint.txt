@@ -1,0 +1,24 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+														Check Constraint
+drop table emp;
+create table emp (
+empname varchar2(10),
+salary number (6)
+check (salary >= 0 and salary <= 100000)
+);
+
+insert into emp values ('Rohit', 60000);
+insert into emp values ('Suman', 0);
+insert into emp values ('Manav', 100000);
+insert into emp values ('Puravi', -10000);
+insert into emp values ('Saurabh', 110000);
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==
+
+update emp
+set salary = salary - 10000
+where empname='Manav';
+
+update emp
+set salary = salary - 61000
+where empname='Rohit';
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

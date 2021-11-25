@@ -1,0 +1,25 @@
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++													INDEX
+													INDEX Creation
+drop table book;
+drop table pub;
+
+create table pub (
+pcode char (2),
+pname varchar (10),
+pemail varchar (20),
+pphone numeric(10),
+pbooks numeric(5)
+);
+
+Insert into pub values (‘P1’, ‘BPB’, ‘bpd@gmail.com’, 1234567890, 1200);
+Insert into pub values (‘P2’, ‘Khanna’, ‘khanna@gmail.com’, 4567891230, 3000);
+Insert into pub values (‘P3’, ‘Galgotia’, ‘galgotia@gmail.com’, 7891234560, 4000);
+Insert into pub values (‘P4’, ‘Gal%’, ‘gal%@gmail.com’, 7891234560, 4000);
+Insert into pub values (‘P5’, ‘PHI’, ‘phi@gmail.com’, 7891234560, 4500);
+Insert into pub values (‘P6’, ‘Pearson’, ‘pearson@gmail.com’, 7891234560, 5100);
+Insert into pub values (‘P7’, ‘Saraswati’, ‘saraswati@gmail.com’, 7891234560, 5500);
+Insert into pub values (‘P8’, ‘Sarawagi’, ‘sarawagi@gmail.com’, 7891234560, 5500);
+
+create index pub.pname on pub(pname);            /* temp table space not defined till now */
+The index is used automatically.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
